@@ -1,7 +1,7 @@
 # Ray Tracing Program
 
 This Ray Tracing Program is a compilation of different small assignments for my class in computer graphics at NYU during the Fall 2020.
-In this project, I will implement a basic raytracer using C++ and use it to render spheres, planes, and triangular meshes with different projections (Orthographic or Perspective), and different shading displays. I will add more features to the ones described below to make this project more complete. For a more detailled explanation of the concepts described here, please refer to the [Computer Graphics](../../../cg) repository.
+In this project, I will implement a basic raytracer using C++ and use it to render spheres, planes, and triangular meshes with different projections (Orthographic or Perspective), and different shading displays. I will add more features to the ones described below to make this project more complete. For a more detailled explanation of the concepts described here, please refer to the [Computer Graphics](https://github.com/JohanKelyn/cg) repository.
 
 ## Preparing the Environment and Submission
 
