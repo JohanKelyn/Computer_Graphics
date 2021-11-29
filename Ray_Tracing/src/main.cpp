@@ -14,7 +14,7 @@
 #include <Eigen/Geometry>
 
 // Image writing library
-#define STB_IMAGE_WRITE_IMPLEMENTATION // Do not include this line twice in your project!
+#define STB_IMAGE_WRITE_IMPLEMENTATION 
 #include "stb_image_write.h"
 #include "utils.h"
 
@@ -22,7 +22,7 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
-// Shortcut to avoid Eigen:: everywhere, DO NOT USE IN .h
+// Shortcut to avoid Eigen::
 using namespace Eigen;
 
 ////////////////////////////////////////////////////////////////////////////////
