@@ -5,7 +5,7 @@ In this project, I will implement a basic raytracer using C++ and use it to rend
 
 ## Preparing the Environment and Submission
 
-Follow the instructions on the [general instructions page](../RULES.md) to set up what you need to run this project locally.
+Follow the instructions on the [general instructions page](https://github.com/danielepanozzo/cg/blob/master/RULES.md) to set up what you need to run this project locally.
 
 ## Using Eigen
 
