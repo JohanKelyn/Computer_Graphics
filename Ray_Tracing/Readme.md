@@ -15,16 +15,16 @@ Please  note that I used the external math library eigen to do all math calculat
 
 The points below are a the sequence of steps that I took to build this ray tracing program.
 
-### Ray Tracing a Sphere with Parallel Projection
-### Ray Tracing a Parallelogram with Parallel Projection
-### Ray Tracing a Sphere with Perspective Projection
-### Ray Tracing a Parallelogram with Perspective Projection
-### Adding Shading Components (Ambient, Specular, and Diffuse)
-### RGB components
-### Field of View and Perspective Camera
-### Shadow Rays
-### Reflection & Refraction
-### Depth of Field
-### Reading External Json Files and Triangulated Meshes
-### Adding AABB Trees for Better Performance
+#### Ray Tracing a Sphere with Parallel Projection
+#### Ray Tracing a Parallelogram with Parallel Projection
+#### Ray Tracing a Sphere with Perspective Projection
+#### Ray Tracing a Parallelogram with Perspective Projection
+#### Adding Shading Components (Ambient, Specular, and Diffuse)
+#### RGB components
+#### Field of View and Perspective Camera
+#### Shadow Rays
+#### Reflection & Refraction
+#### Depth of Field
+#### Reading External Json Files and Triangulated Meshes
+#### Adding AABB Trees for Better Performance
 
