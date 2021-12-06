@@ -9,12 +9,13 @@
 #include <stack>
 #include <queue>
 
+
 // Eigen for matrix operations
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
 // Image writing library
-#define STB_IMAGE_WRITE_IMPLEMENTATION 
+#define STB_IMAGE_WRITE_IMPLEMENTATION // Do not include this line twice in your project!
 #include "stb_image_write.h"
 #include "utils.h"
 
@@ -22,7 +23,7 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
-// Shortcut to avoid Eigen::
+// Shortcut to avoid Eigen:: everywhere, DO NOT USE IN .h
 using namespace Eigen;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -250,14 +251,14 @@ bool Sphere::intersect(const Ray &ray, Intersection &hit) {
 		double temp0 = (- b - root)/(2*a);
 		double temp1 = (- b + root)/(2*a);
 		
-		if(((ray.origin + temp0 * ray.direction).norm() > (ray.origin + temp1 * ray.direction).norm()) && (temp1 > 0)){
+		if(((ray.origin + temp0 * ray.direction).norm() > (ray.origin + temp1 * ray.direction).norm()) && temp1 > 0){
 			hit.ray_param = temp1;
 			hit.position = ray.origin + hit.ray_param * ray.direction;
 			hit.normal = (hit.position - position).normalized();
 			return true;
 		}
 
-		if(((ray.origin + temp0 * ray.direction).norm() < (ray.origin + temp1 * ray.direction).norm()) && (temp0 > 0)){
+		if(((ray.origin + temp0 * ray.direction).norm() < (ray.origin + temp1 * ray.direction).norm()) && temp0 > 0){
 			hit.ray_param = temp0;
 			hit.position = ray.origin + hit.ray_param * ray.direction;
 			hit.normal = (hit.position - position).normalized();
@@ -501,11 +502,11 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 	Vector3d refraction_color(0, 0, 0);
 
 	for (const Light &light : scene.lights) {
-		Vector3d Li = (light.position - hit.position).normalized();
+		Vector3d Li = (light.position - hit.position);
 		Vector3d N = hit.normal;
 
 		// Shadow rays
-		float eps = 0.1;
+		float eps = 0.01;
 		Ray shadowray;
 		shadowray.direction = (light.position - hit.position).normalized();
 		shadowray.origin = hit.position + eps * shadowray.direction;
@@ -515,7 +516,7 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 			Vector3d diffuse = mat.diffuse_color * std::max(Li.dot(N), 0.0);
 
 			// Specular contribution
-			Vector3d Vi = (scene.camera.position - hit.position).normalized();
+			Vector3d Vi = (scene.camera.position - hit.position);
 			Vector3d h_unit = (Li + Vi).normalized();
 			Vector3d specular = mat.specular_color * pow(std::max(h_unit.dot(N), 0.0), mat.specular_exponent);
 
@@ -538,15 +539,13 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 	// Refracted Ray
 	if((obj.material.refraction_color.norm() <= 3) && (obj.material.refraction_color.norm() > 0)){
 		Ray refractionRay; 
-		auto nv = hit.normal.dot(v);
+		auto nv = hit.normal.dot(-v);
 		auto ri = obj.material.refraction_index;
-		refractionRay.direction = (ri * nv - sqrt(1 - (ri * ri) * (1 - nv * nv))) * hit.normal - ri * v;
+		refractionRay.direction = (-v - nv * hit.normal)/ri - hit.normal * (sqrt((1 - nv * nv)/(ri*ri)));
 		refractionRay.origin = hit.position + 0.0001 * refractionRay.direction;
 		refraction_color = shoot_ray(scene, refractionRay, max_bounce-1);
 		refraction_color = refraction_color.cwiseProduct(mat.refraction_color);
-	}
-	
-			
+	}		
 
 	// Rendering equation
 	Vector3d C = ambient_color + lights_color + reflection_color + refraction_color;
@@ -615,7 +614,7 @@ void render_scene(const Scene &scene) {
 	int w = 640;
 	int h = 480;
 	int iter = 3;
-	int max_bounce = 2;
+	int max_bounce = 1;
 	MatrixXd R = MatrixXd::Zero(w, h);
 	MatrixXd G = MatrixXd::Zero(w, h);
 	MatrixXd B = MatrixXd::Zero(w, h);
@@ -641,7 +640,7 @@ void render_scene(const Scene &scene) {
 		for (unsigned j = 0; j < h; ++j) {
 			Vector3d C = Vector3d::Zero();
 			for (unsigned k = 0; k < iter; ++k){
-				Vector3d x = Vector3d::Random()*scene.camera.lens_radius;
+				Vector3d x = Vector3d::Random()/2;
 				x(2) = 0;
 				Vector3d shift = grid_origin + (i+0.5)*x_displacement + (j+0.5)*y_displacement;
 
@@ -650,7 +649,7 @@ void render_scene(const Scene &scene) {
 
 				if (scene.camera.is_perspective) {
 					// Perspective camera
-					ray.origin = scene.camera.position + x;
+					ray.origin = scene.camera.position + x*scene.camera.lens_radius;
 					ray.direction = shift - ray.origin;
 				} else {
 					// Orthographic camera
@@ -760,6 +759,7 @@ int main(int argc, char *argv[]) {
 	}
 	Scene scene = load_scene(filename);
 	render_scene(scene);
+	std::cout << Vector3d::Random() << std::endl;
 
 	return 0;
 }
