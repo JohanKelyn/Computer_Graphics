@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/build",
+  "command": "/usr/bin/clang++ -DDATA_DIR=\\\"/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/data/\\\" -isystem ../../ext/eigen -isystem ../../ext/gif-h -isystem ../../ext/stb -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -std=gnu++11 -o CMakeFiles/assignment5.dir/src/main.cpp.o -c /Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/src/main.cpp",
+  "file": "/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/src/main.cpp"
+},
+{
+  "directory": "/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/build",
+  "command": "/usr/bin/clang++ -DDATA_DIR=\\\"/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/data/\\\" -isystem ../../ext/eigen -isystem ../../ext/gif-h -isystem ../../ext/stb -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -std=gnu++11 -o CMakeFiles/assignment5.dir/src/raster.cpp.o -c /Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/src/raster.cpp",
+  "file": "/Users/johankelyn/My_Documents/Classes/Fall_2020/Computer_Graphics/HW5/Assignment_5/src/raster.cpp"
+}
+]
