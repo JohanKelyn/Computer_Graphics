@@ -4,4 +4,4 @@ This folder contains small projects based on what I learned from the tutorials f
 
 ## Projects
 * <strong>Simple Model</strong> : Bunny with Phong Lighting
-![](Simple_Model/Data/bunny_phong.png? =60x40)
+<img src="Simple_Model/Data/bunny_phong.png" width="60" height="40">
