@@ -4,4 +4,3 @@ This folder contains small projects based on what I learned from the tutorials f
 
 ## Projects
 * <strong>Simple Model</strong> : Bunny with Phong Lighting
-![](img/bunny.png?raw=true)
