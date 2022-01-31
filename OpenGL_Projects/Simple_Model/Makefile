@@ -3,8 +3,8 @@ BUILD_DIR = build
 CC = g++
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_NAME = play
-INCLUDE_PATHS = -I../../include -I./Header
-LIBRARY_PATHS = -L../../lib
+INCLUDE_PATHS = -I../include -I./Header
+LIBRARY_PATHS = -L../lib
 COMPILER_FLAGS = -std=c++11 -Wall -O0 -g
 LINKER_FLAGS = -lm -framework OpenGL -lglew -lglfw
 

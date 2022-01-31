@@ -32,7 +32,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "uniform sampler2D ourTexture;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = texture(ourTexture, TextCoord) * color;\n"
+    "   FragColor = texture(ourTexture, TextCoord);\n"
     "}\n\0";
 
 int main()
@@ -179,7 +179,7 @@ int main()
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("./Assets/container.jpeg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("./Assets/awesome-face.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
