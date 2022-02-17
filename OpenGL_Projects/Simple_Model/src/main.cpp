@@ -18,13 +18,12 @@ const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
 // Camera Settings
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float fov = 45.0f;
 
 // Light Settings
-glm::vec3 light_color(1.0f, 1.0f, 1.0f);
 glm::vec3 light_position(-1.0f, 1.0f, -0.5f);
 
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -61,7 +60,7 @@ int main(int argc, const char* argv[])
     // Create Render Window
     RenderWindow window("OpenGL", WIDTH, HEIGHT);
     // Set Window Background
-    window.setWindowBackground(0.1, 0.1, 0.1);
+    window.setWindowBackground(0.2, 0.2, 0.2);
 
     glEnable(GL_DEPTH_TEST); // Enable GL Depth Test
 
@@ -103,11 +102,31 @@ int main(int argc, const char* argv[])
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(fov), (float)window.getWindowWidth() / (float)window.getWindowWidth(), 0.1f, 100.0f);
     shaderProgram.setMatrixUniform(projection, "ProjMatrix"); // Projection Matrix
-    shaderProgram.setVectorUniform(light_color, "light_color"); // Light Uniform Color Uniform
+    
+    // Camera Position Uniform
     shaderProgram.setVectorUniform(cameraPos, "viewPos"); // Camera Pos Uniform
+
+    // Material Uniform
+    glm::vec3 amb(0.24725f, 0.1995f, 0.0745f);
+    glm::vec3 diff(0.75164f, 0.60648f, 0.22648f);
+    glm::vec3 spec(0.628281f, 0.555802f, 0.366065f);
+    float shininess = 0.4 * 128;
+    shaderProgram.setVectorUniform(amb, "material.ambient");
+    shaderProgram.setVectorUniform(diff, "material.diffuse");
+    shaderProgram.setVectorUniform(spec, "material.specular");
+    shaderProgram.setFloatUniform(shininess, "material.shininess");
+
+    // Light Uniform
+    glm::vec3 amb_light(0.5f, 0.5f, 0.5f);
+    glm::vec3 diff_light(0.5f, 0.5f, 0.5f);
+    glm::vec3 spec_light(1.0f, 1.0f, 1.0f);
+    shaderProgram.setVectorUniform(amb_light, "light.ambient");
+    shaderProgram.setVectorUniform(diff_light,"light.diffuse"); // darkened
+    shaderProgram.setVectorUniform(spec_light, "light.specular");
 
     lightShader.Activate();
     lightShader.setMatrixUniform(projection, "ProjMatrix");
+    lightShader.setVectorUniform(amb_light, "color");
     
     // *****************************************************
     // ************** Main Loop Prog ***********************

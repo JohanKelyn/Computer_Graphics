@@ -85,6 +85,12 @@ void Shader::setMatrixUniform(glm::mat4 &mat, const char* name)
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void Shader::setFloatUniform(float &t, const char* name)
+{
+    int uniformLocation = glGetUniformLocation(ID, name);
+    glUniform1f(uniformLocation, t);
+}
+
 void Shader::Activate()
 {
 	glUseProgram(ID);

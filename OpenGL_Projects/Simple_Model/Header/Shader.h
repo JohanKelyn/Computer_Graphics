@@ -19,6 +19,7 @@ class Shader
     public:
         GLuint ID;
         Shader(const char* vertexShaderSource, const char* fragmentShaderSource);
+        void setFloatUniform(float &t, const char* name);
         void setVectorUniform(glm::vec3 &vec, const char* name);
         void setMatrixUniform(glm::mat4 &mat, const char* name);
         void Activate();

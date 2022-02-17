@@ -1,6 +1,7 @@
 #include "Object.h"
 #include <iostream>
 
+
 Object::Object(const char* filepath)
 {
 
@@ -40,20 +41,25 @@ void Object::load_off(const std::string &filename)
 
 void Object::get_per_face_normals()
 {
+	VectorXf verts = VectorXf::Zero(V.rows());
 	for(unsigned i=0; i < F.rows(); ++i){
 		Vector3f vert1((V.row(F.row(i)[0])[0]), (V.row(F.row(i)[0])[1]), (V.row(F.row(i)[0])[2]));
 		Vector3f vert2((V.row(F.row(i)[1])[0]), (V.row(F.row(i)[1])[1]), (V.row(F.row(i)[1])[2]));
 		Vector3f vert3((V.row(F.row(i)[2])[0]), (V.row(F.row(i)[2])[1]), (V.row(F.row(i)[2])[2]));
 		Vector3f v1 = (vert2 - vert1).normalized();
-		Vector3f v2 = (vert3 - vert1).normalized();
+		Vector3f v2 = (vert3 - vert2).normalized();
 		Vector3f n1((v1[1]*v2[2]-v2[1]*v1[2]), -(v1[0]*v2[2]-v1[2]*v2[0]), (v1[0]*v2[1]-v1[1]*v2[0]));
 		
 		N.row(F.row(i)[0]) += n1;
 		N.row(F.row(i)[1]) += n1;
 		N.row(F.row(i)[2]) += n1;
+
+		verts[F.row(i)[0]] += 1;
+		verts[F.row(i)[1]] += 1;
+		verts[F.row(i)[2]] += 1;
 	}
 	for(unsigned i=0; i<N.rows(); ++i){
-		N.row(i) = N.row(i).normalized();
+		N.row(i) = (N.row(i)/verts[i]).normalized();
 	}
 }
 
