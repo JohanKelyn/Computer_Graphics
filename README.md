@@ -1,7 +1,8 @@
-# Computer_Graphics
+## Computer_Graphics
 
-This repository contains Four basic computer graphics projects:
+This repository contains some basic computer graphics projects:
 * A Basic Raytracing Program
+  - A Basic Ray Tracing Project 
 * A Rasteraizer Program
 * OpenGL Small Projects
 * OpenGL Tutorials.
