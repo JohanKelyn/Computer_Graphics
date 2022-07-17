@@ -1,1 +1,8 @@
-﻿  LearnOpenGL.vcxproj -> D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\Debug\LearnOpenGL.exe
+﻿  Camera_Circle.cpp
+D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\src\Camera_Circle.cpp(221,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\src\Camera_Circle.cpp(222,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\src\Camera_Circle.cpp(171,18): warning C4101: 'modelLoc': unreferenced local variable
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\Debug\vc120.pdb'; linking object as if no debug info
+  LearnOpenGL.vcxproj -> D:\Johan\Programming\Graphics\OpenGL\LearnOpenGL\Debug\LearnOpenGL.exe
