@@ -30,7 +30,7 @@ The points below are a the sequence of steps that I took to build this ray traci
 
 ## Final Output
 
-These are the two of the possible outcomes, you can create with this simple ray tracing program
+These are the possible outcomes, you can create with this simple ray tracing program
 
 ![](img/bunny.png?raw=true)
 
