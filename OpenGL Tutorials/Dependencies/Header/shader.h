@@ -13,23 +13,29 @@ class Shader
 public:
 	unsigned int ID;
 
-	Shader(const char* vShaderSource, const char* fShaderSource);
+	Shader(const char* vShaderSource, const char* fShaderSource, const char* gShaderSource);
 	void use();
 	void setBool(const char* name, bool value) const;
 	void setInt(const char* name, int value) const;
 	void setFloat(const char* name, float value) const;
+	void setVec3(const char* name, const glm::vec3& vec) const;
+	void setVec4(const char* name, const glm::vec3& vec) const;
 	void setMat4(const char* name, const glm::mat4& mat) const;
 };
 
-Shader::Shader(const char* vShaderSource, const char* fShaderSource)
+Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char* geometryPath = nullptr)
 {
 	std::string vertexCode;
 	std::string fragmentCode;
+	std::string geometryCode;
 	std::ifstream vShaderFile;
 	std::ifstream fShaderFile;
+	std::ifstream gShaderFile;
+
 
 	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	try
 	{
@@ -44,6 +50,14 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource)
 
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
+		if (geometryPath != nullptr)
+		{
+			gShaderFile.open(geometryPath);
+			std::stringstream gShaderStream;
+			gShaderStream << gShaderFile.rdbuf();
+			gShaderFile.close();
+			geometryCode = gShaderStream.str();
+		}
 	}
 	catch (std::ifstream::failure e)
 	{
@@ -78,10 +92,28 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource)
 		printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED \n");
 		printf("%s \n", infoLog);
 	}
+
+	unsigned int geometry;
+	if (geometryPath != nullptr)
+	{
+		const char* gShaderCode = geometryCode.c_str();
+		geometry = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometry, 1, &gShaderCode, NULL);
+		glCompileShader(geometry);
+		glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			glGetShaderInfoLog(geometry, 512, NULL, infoLog);
+			printf("ERROR::SHADER::GEOMETRY::COMPILATION_FAILED \n");
+			printf("%s \n", infoLog);
+		}
+	}
 	
 	ID = glCreateProgram();
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
+	if (geometryPath != nullptr)
+		glAttachShader(ID, geometry);
 	glLinkProgram(ID);
 	glGetProgramiv(ID, GL_LINK_STATUS, &success);
 	if (!success)
@@ -92,6 +124,8 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource)
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	if (geometryPath != nullptr)
+		glDeleteShader(geometry);
 }
 
 void Shader::use()
@@ -112,6 +146,16 @@ void Shader::setInt(const char* name, int value) const
 void Shader::setFloat(const char* name, float value) const
 {
 	glUniform1f(glGetUniformLocation(ID, name), value);
+}
+
+void Shader::setVec3(const char* name, const glm::vec3& vec) const
+{
+	glUniform3fv(glGetUniformLocation(ID, name), 1, &vec[0]);
+}
+
+void Shader::setVec4(const char* name, const glm::vec3& vec) const
+{
+	glUniform4fv(glGetUniformLocation(ID, name), 1, &vec[0]);
 }
 
 void Shader::setMat4(const char* name, const glm::mat4& mat) const
