@@ -1,8 +1,8 @@
 ## Computer_Graphics
 
-This repository contains some computer graphics projects:
-* NYU Computer Graphics Class
+This repository contains all the computer graphics related projects, tutorials and classes that I have worked over the past year
+* NYU CG Class
 * OpenGL Tutorials by JoeyDeVries
-* A Basic Raytracing Program 
-* OpenGL Personal Projects
+* A Raytracing Program 
+* OpenGL Projects
 
