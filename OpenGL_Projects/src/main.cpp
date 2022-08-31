@@ -17,7 +17,7 @@ int main()
 	RenderWindow renderWindow("PROJECT 1");
 	renderWindow.setBackground(0.87, 0.8, 1.0);
 
-	Shader ourShader("./Resources/Shaders/vShaderSource.vs", "./Resources/Shaders/fShaderSource.fs", "./Resources/Shaders/gShaderSource.gs");
+	Shader ourShader("./Resources/Shaders/Project1/vShaderSource.vs", "./Resources/Shaders/Project1/fShaderSource.fs", "./Resources/Shaders/Project1/gShaderSource.gs");
 
 	Mesh bunny("./Resources/Models/bunny.off");
 	Mesh dragon("./Resources/Models/dragon.off");
