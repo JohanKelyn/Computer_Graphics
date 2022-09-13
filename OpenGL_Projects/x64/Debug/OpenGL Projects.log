@@ -1,16 +1,1 @@
-﻿  main.cpp
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(31,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(33,47): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(88,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(129,19): warning C4101: 'f2': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(129,15): warning C4101: 'f1': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(129,23): warning C4101: 'f3': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(20,43): warning C4305: 'argument': truncation from 'double' to 'const float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(64,54): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(76,44): warning C4305: 'argument': truncation from 'double' to 'T'
-          with
-          [
-              T=float
-          ]
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(79,54): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
+﻿  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
