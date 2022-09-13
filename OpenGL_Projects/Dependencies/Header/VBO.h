@@ -1,5 +1,6 @@
 #pragma once
 #include<GL/glew.h>
+#include "Mesh.h"
 
 class VBO
 {
@@ -8,7 +9,7 @@ public:
 	GLuint ID;
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO();
-	void AttachData(float* vertices, GLsizeiptr size);
+	void AttachData(std::vector<Vertex> vertices);
 	// Binds the VBO
 	void Bind();
 	// Unbinds the VBO
@@ -22,10 +23,10 @@ VBO::VBO()
 	glGenBuffers(1, &ID);
 }
 
-void VBO::AttachData(float* vertices, GLsizeiptr size)
+void VBO::AttachData(std::vector<Vertex> vertices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() *  sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 }
 
 // Binds the VBO

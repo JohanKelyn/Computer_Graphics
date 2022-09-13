@@ -12,7 +12,7 @@ public:
 	VAO();
 
 	// Links a VBO to the VAO using a certain layout
-	void LinkVBO(VBO& VBO, unsigned int layout, int size, GLenum type, GLsizei stride, void* offset);
+	void LinkVBO(VBO& VBO, unsigned int layout, int size, GLenum type, void* offset);
 	// Binds the VAO
 	void Bind();
 	// Unbinds the VAO
@@ -27,11 +27,11 @@ VAO::VAO()
 }
 
 // Links a VBO to the VAO using a certain layout
-void VAO::LinkVBO(VBO& VBO, unsigned int layout, int size, GLenum type, GLsizei stride, void* offset)
+void VAO::LinkVBO(VBO& VBO, unsigned int layout, int size, GLenum type, void* offset)
 {
 	VBO.Bind();
-	glVertexAttribPointer(layout, size, type, GL_FALSE, 0, offset);
 	glEnableVertexAttribArray(layout);
+	glVertexAttribPointer(layout, size, type, GL_FALSE, sizeof(Vertex), offset);
 	VBO.Unbind();
 }
 
