@@ -7,5 +7,4 @@ For this project, I used the bunny.obj and the dragon.obj file which can be foun
 Additionally, the project include a movable camera that can be controller using the keyboard.
 
 ## Results
-![](../../Resources/Images/proj1_1.png?raw=true)
 ![](../../Resources/Images/proj1.png?raw=true)
