@@ -15,11 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Dependencies\Header\RenderWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,5 +47,10 @@
     <None Include="Resources\Shaders\vShaderSource.vs" />
     <None Include="Resources\Shaders\fShaderSource.fs" />
     <None Include="Resources\Shaders\gShaderSource.gs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

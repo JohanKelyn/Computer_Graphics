@@ -8,22 +8,23 @@
 #include"Texture.h"
 #include<stb_image.h>
 
-glm::vec3 camera_position(0.0f, 0.0f, 2.0f);
+glm::vec3 camera_position(0.0f, 0.0f, 5.0f);
 Camera camera(camera_position);
-
-glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
-glm::vec3 lightColor(1.0f);
 
 int main()
 {
-	RenderWindow renderWindow("PROJECT 1");
+	RenderWindow renderWindow("PROJECT 2");
 	renderWindow.setBackground(0.87, 0.8, 1.0);
 
-	Shader bunny("./Resources/Shaders/Project1/vShaderSource.vs", "./Resources/Shaders/Project1/fShaderSource.fs", "./Resources/Shaders/Project1/gShaderSource.gs");
-	Shader dragon("./Resources/Shaders/Project1/vShaderSource.vs", "./Resources/Shaders/Project1/fShaderSource.fs", "./Resources/Shaders/Project1/gShaderSource.gs");
+	Shader shader1("./Resources/Shaders/Project2/vShaderSource.vs", "./Resources/Shaders/Project2/fShaderSource.fs");
+	Shader shader2("./Resources/Shaders/Project2/vShaderSource.vs", "./Resources/Shaders/Project2/fShaderSource.fs");
 
-	Mesh mesh1("./Resources/Models/bunny.obj", "obj_vf");
-	Mesh mesh2("./Resources/Models/dragon.obj", "obj_vf");
+	Mesh mesh1("./Resources/Models/Trump/Trump.obj");
+	mesh1.img_src = "./Resources/Models/Trump/Trump.png";
+
+	Mesh mesh2("./Resources/Models/Fox/fox.obj");
+	mesh2.img_src = "./Resources/Models/Fox/fox.png";
+
 
 	VAO VAO1;
 	VBO VBO1;
@@ -31,6 +32,8 @@ int main()
 	VBO1.Bind();
 	VBO1.AttachData(mesh1.vertices);
 	VAO1.LinkVBO(VBO1, 0, 3, GL_FLOAT, (void*)0);
+	VAO1.LinkVBO(VBO1, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+	VAO1.LinkVBO(VBO1, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
 	VAO1.Unbind();
 
 	VAO VAO2;
@@ -39,54 +42,60 @@ int main()
 	VBO2.Bind();
 	VBO2.AttachData(mesh2.vertices);
 	VAO2.LinkVBO(VBO2, 0, 3, GL_FLOAT, (void*)0);
+	VAO2.LinkVBO(VBO2, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+	VAO2.LinkVBO(VBO2, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
 	VAO2.Unbind();
+
+	Texture texture1(mesh1.img_src.c_str(), GL_RGBA);
+	shader1.setInt("ourTexture", 0);
+
+	Texture texture2(mesh2.img_src.c_str(), GL_RGBA);
+	shader2.setInt("ourTexture", 0);
 
 	while (!renderWindow.windowActive())
 	{
 		renderWindow.processInput(camera);
 		renderWindow.clearWindow();
-		
-		bunny.use();
+
+		texture1.ActiveTexture(0);
+		texture1.Bind();
+		shader1.use();
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(-0.3, -1.2, 0));
+		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.2f));
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)renderWindow.width / (float)renderWindow.height, 0.1f, 100.0f);
-		bunny.setMat4("view", view);
-		bunny.setMat4("projection", projection);
-		bunny.setVec3("objectColor", glm::vec3(1.0f, 0.7f, 0.5f));
-		bunny.setVec3("lightColor", lightColor);
-		bunny.setVec3("lightPos", lightPos);
-		bunny.setVec3("viewPos", camera_position);
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(-0.4, -0.3, 0.2));
-		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0, 1.0, 0.0));
-		model = glm::scale(model, glm::vec3(3.0));
-		bunny.setMat4("model", model);
+		shader1.setMat4("model", model);
+		shader1.setMat4("view", view);
+		shader1.setMat4("projection", projection);
 		VAO1.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, mesh1.vertices.size());
 
-		dragon.use();
-		dragon.setMat4("view", view);
-		dragon.setMat4("projection", projection);
-		dragon.setVec3("objectColor", glm::vec3(1.0f, 0.7f, 0.5f));
-		dragon.setVec3("lightColor", lightColor);
-		dragon.setVec3("lightPos", lightPos);
-		dragon.setVec3("viewPos", camera_position);
+		texture2.ActiveTexture(0);
+		texture2.Bind();
+		shader2.use();
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.35, 0.0, 0.0));
-		//model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0, 1.0, 0.0));
-		model = glm::scale(model, glm::vec3(0.005));
-		dragon.setMat4("model", model);
+		model = glm::translate(model, glm::vec3(0.8, -1.2, 0));
+		model = glm::rotate(model, (float)glm::radians(30.0), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		shader2.setMat4("model", model);
+		shader2.setMat4("view", view);
+		shader2.setMat4("projection", projection);
 		VAO2.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, mesh2.vertices.size());
 
 		renderWindow.update();
 	}
 
-	bunny.Delete();
-	dragon.Delete();
+	shader1.Delete();
+	shader2.Delete();
 	VAO1.Delete();
 	VBO1.Delete();
 	VAO2.Delete();
 	VBO2.Delete();
+	texture1.Delete();
+	texture2.Delete();
 
 	renderWindow.close();
 	return 0;
