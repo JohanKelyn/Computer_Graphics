@@ -1,11 +1,1 @@
-﻿  main.cpp
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(31,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(33,47): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\RenderWindow.h(88,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(130,19): warning C4101: 'f2': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(130,15): warning C4101: 'f1': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\Dependencies\Header\FileLoader.h(130,23): warning C4101: 'f3': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(62,42): warning C4305: 'argument': truncation from 'double' to 'const float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(157,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\src\main.cpp(172,59): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
+﻿  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics_Projects\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
