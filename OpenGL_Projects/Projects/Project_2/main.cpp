@@ -100,6 +100,3 @@ int main()
 	renderWindow.close();
 	return 0;
 }
-
-
-

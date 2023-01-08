@@ -13,6 +13,7 @@
 #include<string>
 #include<vector>
 
+
 struct Vertex
 {
 	glm::vec3 positions;
