@@ -67,7 +67,7 @@ int main()
 
 
 	Shader skyboxShader("./Resources/Shaders/Project3/vShaderSource.vs", "./Resources/Shaders/Project3/fShaderSource.fs");
-	Shader foxShader("./Resources/Shaders/Project3/foxShader.vs", "./Resources/Shaders/Project3/foxShader.fs");
+	Shader trumpShader("./Resources/Shaders/Project3/trumpShader.vs", "./Resources/Shaders/Project3/trumpShader.fs");
 
 	
 	VAO skyboxVAO;
@@ -79,15 +79,15 @@ int main()
 	skyboxVAO.Unbind();
 	
 
-	VAO foxVAO;
-	VBO foxVBO;
-	foxVAO.Bind();
-	foxVBO.Bind();
-	foxVBO.AttachData(TrumpMesh.vertices);
-	foxVAO.LinkVBO(foxVBO, 0, 3, GL_FLOAT, (void*)0);
-	foxVAO.LinkVBO(foxVBO, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
-	foxVAO.LinkVBO(foxVBO, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
-	foxVAO.Unbind();
+	VAO trumpVAO;
+	VBO trumpVBO;
+	trumpVAO.Bind();
+	trumpVBO.Bind();
+	trumpVBO.AttachData(TrumpMesh.vertices);
+	trumpVAO.LinkVBO(trumpVBO, 0, 3, GL_FLOAT, (void*)0);
+	trumpVAO.LinkVBO(trumpVBO, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+	trumpVAO.LinkVBO(trumpVBO, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
+	trumpVAO.Unbind();
 
 	
 	int width, height, channels;
@@ -129,8 +129,8 @@ int main()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	
 
-	Texture foxTexture(TrumpMesh.img_src.c_str(), GL_RGBA);
-	foxShader.setInt("ourTexture", 0);
+	Texture trumpTexture(TrumpMesh.img_src.c_str(), GL_RGBA);
+	trumpShader.setInt("ourTexture", 0);
 
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
@@ -141,27 +141,28 @@ int main()
 		renderWindow.clearWindow();
 
 		
-		foxTexture.ActiveTexture(0);
-		foxTexture.Bind();
-		foxShader.use();
+		trumpTexture.ActiveTexture(0);
+		trumpTexture.Bind();
+		trumpShader.use();
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)renderWindow.width / (float)renderWindow.height, 0.1f, 100.0f);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0, -1.2, -0.8));
-		model = glm::rotate(model, (float)glm::radians(30.0), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (float)glm::radians(15.0), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.9f));
-		foxShader.setMat4("model", model);
-		foxShader.setMat4("view", view);
-		foxShader.setMat4("projection", projection);
-		foxVAO.Bind();
+		trumpShader.setMat4("model", model);
+		trumpShader.setMat4("view", view);
+		trumpShader.setMat4("projection", projection);
+		trumpVAO.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, TrumpMesh.vertices.size());
-		foxVAO.Unbind();
+		trumpVAO.Unbind();
 		
 		
 		// draw skybox as last
 		
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
+		view = glm::mat4(glm::mat3(view));
 		skyboxShader.setMat4("view", view);
 		skyboxShader.setMat4("projection", projection);
 		// skybox cube
