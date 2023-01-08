@@ -6,6 +6,7 @@
 #include"Mesh.h"
 #include"Camera.h"
 #include"Texture.h"
+#include"CubeMap.h"
 #include<stb_image.h>
 
 
@@ -55,6 +56,15 @@ float skyboxVertices[] = {
 	-1.0f, -1.0f,  1.0f,
 	 1.0f, -1.0f,  1.0f
 };
+std::vector<std::string> textures_faces
+{
+	"./Resources/Textures/chapel/posx.jpg",
+	"./Resources/Textures/chapel/negx.jpg",
+	"./Resources/Textures/chapel/posy.jpg",
+	"./Resources/Textures/chapel/negy.jpg",
+	"./Resources/Textures/chapel/posz.jpg",
+	"./Resources/Textures/chapel/negz.jpg"
+};
 
 int main()
 {
@@ -89,46 +99,8 @@ int main()
 	trumpVAO.LinkVBO(trumpVBO, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
 	trumpVAO.Unbind();
 
+	unsigned int cubemapTexture = loadCubemap(textures_faces);
 	
-	int width, height, channels;
-	unsigned char* data;
-	
-	unsigned int cubemapTexture;
-	glGenTextures(1, &cubemapTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-
-	std::vector<const char*> textures_faces
-	{
-		"./Resources/Textures/chapel/posx.jpg",
-		"./Resources/Textures/chapel/negx.jpg",
-		"./Resources/Textures/chapel/posy.jpg",
-		"./Resources/Textures/chapel/negy.jpg",
-		"./Resources/Textures/chapel/posz.jpg",
-		"./Resources/Textures/chapel/negz.jpg"
-	};
-
-	for (unsigned int i = 0; i < 6; i++)
-	{
-		data = stbi_load(textures_faces[i], &width, &height, &channels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::cout << "Cubemap texture failed to load at path: " << textures_faces[i] << std::endl;
-			stbi_image_free(data);
-		}
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	
-
 	Texture trumpTexture(TrumpMesh.img_src.c_str(), GL_RGBA);
 	trumpShader.setInt("ourTexture", 0);
 

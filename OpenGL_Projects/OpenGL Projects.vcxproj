@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\Header\Camera.h" />
+    <ClInclude Include="Dependencies\Header\CubeMap.h" />
     <ClInclude Include="Dependencies\Header\EBO.h" />
     <ClInclude Include="Dependencies\Header\FileLoader.h" />
     <ClInclude Include="Dependencies\Header\Mesh.h" />
