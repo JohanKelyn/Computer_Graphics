@@ -96,6 +96,7 @@ static void loadObjFull(const char* path, std::vector<Vertex> &verts)
 			}
 		}
 	}
+
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
 		unsigned int verIndex = vertexIndices[i];
@@ -113,6 +114,7 @@ static void loadObjFull(const char* path, std::vector<Vertex> &verts)
 		temp.textures = uv;
 		verts.push_back(temp);
 	}
+
 }
 
 static void loadObjVF(const char* path, std::vector<Vertex>& verts)
@@ -133,7 +135,8 @@ static void loadObjVF(const char* path, std::vector<Vertex>& verts)
 
 	if (!in_file.is_open())
 	{
-		printf("Could not open file");
+		printf("Error Loading File");
+		printf("Not able to find the file");
 	}
 
 	while (std::getline(in_file, line))
@@ -160,6 +163,38 @@ static void loadObjVF(const char* path, std::vector<Vertex>& verts)
 			}
 		}
 	}
+
+	float maxX = -10000;
+	float maxY = -10000;
+	float maxZ = -10000;
+	float minX = 10000;
+	float minY = 10000;
+	float minZ = 10000;
+
+	for (unsigned int i = 0; i < vertexIndices.size(); i++)
+	{
+		unsigned int verIndex = vertexIndices[i];
+		glm::vec3 vertex = temp_vertices[verIndex - 1];
+		if (vertex[0] >= maxX) {
+			maxX = vertex[0];
+		}
+		if (vertex[0] < minX) {
+			minX = vertex[0];
+		}
+		if (vertex[1] >= maxY) {
+			maxY = vertex[1];
+		}
+		if (vertex[1] < minY) {
+			minY = vertex[1];
+		}
+		if (vertex[2] >= maxZ) {
+			maxZ = vertex[2];
+		}
+		if (vertex[2] < minZ) {
+			minZ = vertex[2];
+		}
+	}
+	
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
 		unsigned int verIndex = vertexIndices[i];
@@ -167,13 +202,10 @@ static void loadObjVF(const char* path, std::vector<Vertex>& verts)
 		glm::vec3 norm = glm::vec3(0.0);
 		glm::vec2 uv = glm::vec2(0.0);
 
-		/*
-		vertex.x = vertex.x / 100;
-		vertex.y = vertex.y / 100;
-		vertex.z = vertex.z / 100;
-		*/
-
 		Vertex temp;
+		vertex[0] = 2 * ((vertex[0] - minX) / (maxX - minX)) - 1;
+		vertex[1] = 2 * ((vertex[1] - minY) / (maxY - minY)) - 1;
+		vertex[2] = 2 * ((vertex[2] - minZ) / (maxZ - minZ)) - 1;
 		temp.positions = vertex;
 		temp.normals = norm;
 		temp.textures = uv;
@@ -181,30 +213,68 @@ static void loadObjVF(const char* path, std::vector<Vertex>& verts)
 	}
 }
 
-void loadOff(const char* path, std::vector<float> vertices, std::vector<unsigned int> indices) {
-	std::ifstream in(path);
-	std::string token;
-	in >> token;
-	int nv, nf, ne;
-	in >> nv >> nf >> ne;
-	auto number_total_vertices = (GLsizei)(3 * nf);
+void loadOff(const char* path, std::vector<Vertex>& verts) {
+	std::vector<unsigned int> vertexIndices;
+	std::vector<glm::vec3> temp_vertices;
+	std::vector<glm::vec3> temp_normals;
+	
 
-	float vx, vy, vz;
-	for (int i = 0; i < nv; ++i) {
-		in >> vx >> vy >> vz;
-		vertices.push_back(vx);
-		vertices.push_back(vy);
-		vertices.push_back(vz);
+	std::ifstream in_file(path);
+	std::string line = "";
+	std::stringstream ss;
+	std::string prefix = "";
+
+
+	glm::vec3 temp_vertex;
+	glm::vec3 temp_normal;
+	unsigned int f1, f2, f3;
+
+	if (!in_file.is_open())
+	{
+		printf("Could not open file");
 	}
 
-	unsigned int i1, i2, i3;
-	for (int i = 0; i < nf; ++i) {
-		int s;
-		in >> s >> i1 >> i2 >> i3;
-		indices.push_back(i1);
-		indices.push_back(i2);
-		indices.push_back(i3);
-		assert(s == 3);
+	int i = 0;
+	int num_ver, num_faces, num_norm;
+
+	while (std::getline(in_file, line))
+	{
+		ss.clear();
+		ss.str(line);
+		if (i == 0)
+		{
+			ss >> prefix;
+		}
+		else if (i == 1)
+		{
+			ss >> num_ver >> num_faces >> num_norm;
+		}
+		else if (i > 1 && i < 368)
+		{
+			ss >> temp_vertex.x >> temp_vertex.y >> temp_vertex.z >> temp_normal.x >> temp_normal.y >> temp_normal.z;
+			temp_vertex *= 0.01;
+			temp_vertices.push_back(temp_vertex);
+			temp_normals.push_back(temp_normal);
+		}
+		else
+		{
+			ss >> prefix >> f1 >> f2 >> f3;
+			vertexIndices.push_back(f1);
+			vertexIndices.push_back(f2);
+			vertexIndices.push_back(f3);
+		}
+		i++;
+	}
+	for (unsigned int j = 0; j < vertexIndices.size(); j++)
+	{
+		unsigned int verIndex = vertexIndices[j];
+		glm::vec3 vertex = temp_vertices[verIndex];
+		glm::vec3 norm = temp_normals[verIndex];
+
+		Vertex temp;
+		temp.positions = vertex;
+		temp.normals = norm;
+		verts.push_back(temp);
 	}
 }
 

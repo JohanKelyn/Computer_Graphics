@@ -1,22 +1,93 @@
 #pragma once
 #include "FileLoader.h"
 #include<vector>
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
+#include "Texture.h"
 
 class Mesh
 {
+	private:
+		
+		VAO VAO1;
+		VBO VBO1;
+		EBO EBO1;
+		Texture texture;
 	public:
-		std::vector<Vertex> vertices;
-		Mesh(const char* path, const char* type);
+		std::vector<Vertex> data;
+		Mesh() {};
+		Mesh(std::string path, std::string type);
+		void RenderMesh(Shader shader, std::string mode);
+		void DestroyMesh();
 		std::string img_src;
 };
 
-Mesh::Mesh(const char* path, const char* type = "obj_vtnf")
+Mesh::Mesh(std::string model, std::string type = "obj_vtnf")
 {
-	if(type == "obj_vtnf")
-		loadObjFull(path, this->vertices);
-	else if(type == "obj_vf")
-		loadObjVF(path, this->vertices);
+	std::string path = "";
+	if (type == "obj_vtnf")
+	{
+		path = "./Resources/Models/" + model + "/" + model + ".obj";
+		loadObjFull(path.c_str(), data);
+	}
+	else if (type == "obj_vf") {
+		path = "./Resources/Models/" + model + "/" + model + ".obj";
+		loadObjVF(path.c_str(), data);
+	}
+	else if (type == "off") {
+		path = "./Resources/Models/" + model + "/" + model + ".off";
+		loadOff(path.c_str(), data);
+	}
+}
 
+void Mesh::RenderMesh(Shader shader, std::string mode = "triangle") {
+	VAO1.Bind();
+	VBO1.Bind();
+	VBO1.AttachData(data);
+	
+	int number_data_points = data[0].positions.length() + data[0].normals.length() + data[0].textures.length();
+	if (number_data_points == 3) {
+		VAO1.LinkVBO(VBO1, 0, 3, GL_FLOAT, (void*)0);
+	}
+	else if (number_data_points == 6) {
+		VAO1.LinkVBO(VBO1, 0, 3, GL_FLOAT, (void*)0);
+		VAO1.LinkVBO(VBO1, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+	}
+	else if (number_data_points == 8) {
+		VAO1.LinkVBO(VBO1, 0, 3, GL_FLOAT, (void*)0);
+		VAO1.LinkVBO(VBO1, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+		VAO1.LinkVBO(VBO1, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
+	}
+	VAO1.Unbind();
+
+	if (img_src.length() > 0) {
+		std::string folder = img_src.substr(0, img_src.length() - 4);
+		texture = Texture(("./Resources/Models/"+ folder + "/" + img_src).c_str(), GL_RGBA);
+		shader.setInt("ourTexture", 0);
+		texture.ActiveTexture(0);
+		texture.Bind();
+	}
+
+	if (mode == "triangle") {
+		// render Cube
+		glBindVertexArray(VAO1.ID);
+		glDrawArrays(GL_TRIANGLES, 0, data.size());
+		glBindVertexArray(0);
+	}
+	else if (mode == "points") {
+		// render Cube
+		glBindVertexArray(VAO1.ID);
+		glDrawArrays(GL_POINTS, 0, data.size());
+		glBindVertexArray(0);
+	}
+	
+}
+
+void Mesh::DestroyMesh(){
+	VAO1.Delete();
+	VBO1.Delete();
+	texture.Delete();
 }
 
 

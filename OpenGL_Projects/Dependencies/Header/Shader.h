@@ -12,8 +12,8 @@ class Shader
 {
 public:
 	unsigned int ID;
-
-	Shader(const char* vShaderSource, const char* fShaderSource, const char* gShaderSource);
+	Shader() {};
+	Shader(std::string vShaderSource, std::string fShaderSource, std::string gShaderSource);
 	void use();
 	void setBool(const char* name, bool value) const;
 	void setInt(const char* name, int value) const;
@@ -25,7 +25,7 @@ public:
 	void Delete();
 };
 
-Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char* geometryPath = nullptr)
+Shader::Shader(std::string vShaderSource, std::string fShaderSource, std::string geometryPath = "")
 {
 	std::string vertexCode;
 	std::string fragmentCode;
@@ -42,8 +42,8 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char*
 	try
 	{
 		// Open Files
-		vShaderFile.open(vShaderSource);
-		fShaderFile.open(fShaderSource);
+		vShaderFile.open("./Resources/Shaders/"  + vShaderSource);
+		fShaderFile.open("./Resources/Shaders/" + fShaderSource);
 		std::stringstream vShaderStream, fShaderStream;
 		vShaderStream << vShaderFile.rdbuf();
 		fShaderStream << fShaderFile.rdbuf();
@@ -52,9 +52,9 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char*
 
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
-		if (geometryPath != nullptr)
+		if (geometryPath.length() > 0)
 		{
-			gShaderFile.open(geometryPath);
+			gShaderFile.open("./Resources/Shaders/" + geometryPath);
 			std::stringstream gShaderStream;
 			gShaderStream << gShaderFile.rdbuf();
 			gShaderFile.close();
@@ -96,7 +96,7 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char*
 	}
 
 	unsigned int geometry;
-	if (geometryPath != nullptr)
+	if (geometryPath.length() > 0)
 	{
 		const char* gShaderCode = geometryCode.c_str();
 		geometry = glCreateShader(GL_GEOMETRY_SHADER);
@@ -114,7 +114,7 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char*
 	ID = glCreateProgram();
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
-	if (geometryPath != nullptr)
+	if (geometryPath.length() > 0)
 		glAttachShader(ID, geometry);
 	glLinkProgram(ID);
 	glGetProgramiv(ID, GL_LINK_STATUS, &success);
@@ -126,7 +126,7 @@ Shader::Shader(const char* vShaderSource, const char* fShaderSource, const char*
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	if (geometryPath != nullptr)
+	if (geometryPath.length() > 0)
 		glDeleteShader(geometry);
 }
 

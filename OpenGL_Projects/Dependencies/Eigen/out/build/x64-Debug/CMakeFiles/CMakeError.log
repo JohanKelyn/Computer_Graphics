@@ -1,0 +1,20 @@
+Performing C++ SOURCE FILE Test EIGEN_COMPILER_SUPPORT_CPP11 failed with the following output:
+Change Dir: C:/Users/Johan/OneDrive/Documentos/GitHub/Computer_Graphics_Projects/OpenGL_Projects/Dependencies/Eigen/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_a5790 && [1/2] Building CXX object CMakeFiles\cmTC_a5790.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '-std=c++11'
+[2/2] Linking CXX executable cmTC_a5790.exe
+
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_std=cpp03 failed with the following output:
+Change Dir: C:/Users/Johan/OneDrive/Documentos/GitHub/Computer_Graphics_Projects/OpenGL_Projects/Dependencies/Eigen/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_f00ad && [1/2] Building CXX object CMakeFiles\cmTC_f00ad.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '-std=c++03'
+[2/2] Linking CXX executable cmTC_f00ad.exe
+
+
+Source file was:
+int main() { return 0; }

@@ -114,9 +114,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\Header;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\stb\ASSIMP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\Header;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libigl\include;$(SolutionDir)Dependencies\Eigen;$(SolutionDir)Dependencies\stb\ASSIMP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +149,7 @@
     <ClInclude Include="Dependencies\Header\CubeMap.h" />
     <ClInclude Include="Dependencies\Header\EBO.h" />
     <ClInclude Include="Dependencies\Header\FileLoader.h" />
+    <ClInclude Include="Dependencies\Header\Grid.h" />
     <ClInclude Include="Dependencies\Header\Mesh.h" />
     <ClInclude Include="Dependencies\Header\RenderWindow.h" />
     <ClInclude Include="Dependencies\Header\Shader.h" />

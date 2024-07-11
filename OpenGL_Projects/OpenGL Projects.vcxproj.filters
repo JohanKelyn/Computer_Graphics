@@ -45,6 +45,9 @@
     <ClInclude Include="Dependencies\Header\CubeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\Header\Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\vShaderSource.vs" />

@@ -7,14 +7,16 @@
 class Texture
 {
 	public:
-		unsigned int ID;
-		GLenum type = GL_TEXTURE_2D;
+		Texture() { ID = 0; };
 		Texture(const char* image, GLenum format);
-
 		void ActiveTexture(int i);
 		void Bind();
 		void Unbind();
 		void Delete();
+	private:
+		unsigned int ID = 0;
+		GLenum type = GL_TEXTURE_2D;
+		
 };
 
 Texture::Texture(const char* image, GLenum format)

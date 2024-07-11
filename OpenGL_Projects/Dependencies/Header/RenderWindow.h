@@ -3,11 +3,15 @@
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 #include<iostream>
-
 #include"Camera.h"
 
-float deltaTime = 0.0;
+static float deltaTime = 0.0;
 float lastFrame = 0.0f;
+
+glm::vec3 camera_position(0.0f, 0.0f, 5.0f);
+static Camera camera(camera_position);
+
+static glm::vec3 light_position(-10.0, 50.0, 10.0);
 
 class RenderWindow
 {
@@ -30,7 +34,7 @@ class RenderWindow
 		float lastX = width / 2.0f;
 		float lastY = height / 2.0;
 		bool firstMouse = true;
-		float background[4] = { 0.1, 0.1, 0.1, 1.0 };
+		float background[4] = { 0.2, 0.2, 0.2, 1.0 };
 
 		void Init();
 };
@@ -59,6 +63,7 @@ void RenderWindow::Init()
 	}
 	glfwMakeContextCurrent(window);
 	glViewport(0, 0, width, height);
+
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -90,17 +95,17 @@ void RenderWindow::processInput(Camera &camera)
 	lastFrame = currentFrame;
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(UP, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		camera.ProcessKeyboard(DOWN, deltaTime);
 }
 
@@ -134,5 +139,9 @@ void RenderWindow::setBackground(const float r, const float g, const float b)
 	background[1] = g;
 	background[2] = b;
 }
+
+
+
+
 
 

@@ -69,27 +69,31 @@ class Camera
 			float velocity = MovementSpeed * deltaTime;
 			if (direction == FORWARD)
 			{
-				Position += Front * velocity;
+				if (Position.z > 2) Position += Front * velocity;
 			}
 			if (direction == BACKWARD)
 			{
-				Position -= Front * velocity;
+				if (Position.z < 5) Position -= Front * velocity;
 			}
 			if (direction == LEFT)
 			{
-				Position -= Right * velocity;
+				if (Position.x > -2)Position -= Right * velocity;
 			}
 			if (direction == RIGHT)
 			{
-				Position += Right * velocity;
+				if (Position.x < 2) Position += Right * velocity;
 			}
 			if (direction == UP)
 			{
-				Position += Up * velocity;
+				if (Position.y < 2) {
+					Position += Up * velocity;
+				}
 			}
 			if (direction == DOWN)
 			{
-				Position -= Up * velocity;
+				if (Position.y > -0.3) {
+					Position -= Up * velocity;
+				}
 			}
 		}
 
