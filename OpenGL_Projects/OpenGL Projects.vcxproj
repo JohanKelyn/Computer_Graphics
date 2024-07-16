@@ -148,11 +148,12 @@
     <ClInclude Include="Dependencies\Header\Camera.h" />
     <ClInclude Include="Dependencies\Header\CubeMap.h" />
     <ClInclude Include="Dependencies\Header\EBO.h" />
+    <ClInclude Include="Dependencies\Header\FBO.h" />
     <ClInclude Include="Dependencies\Header\FileLoader.h" />
-    <ClInclude Include="Dependencies\Header\Grid.h" />
     <ClInclude Include="Dependencies\Header\Mesh.h" />
     <ClInclude Include="Dependencies\Header\RenderWindow.h" />
     <ClInclude Include="Dependencies\Header\Shader.h" />
+    <ClInclude Include="Dependencies\Header\Shadow.h" />
     <ClInclude Include="Dependencies\Header\Texture.h" />
     <ClInclude Include="Dependencies\Header\VAO.h" />
     <ClInclude Include="Dependencies\Header\VBO.h" />
@@ -161,9 +162,6 @@
     <None Include="Resources\Shaders\fShaderSource.fs" />
     <None Include="Resources\Shaders\gShaderSource.gs" />
     <None Include="Resources\Shaders\vShaderSource.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

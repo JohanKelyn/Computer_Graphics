@@ -14,17 +14,25 @@ class Mesh
 		VBO VBO1;
 		EBO EBO1;
 		Texture texture;
-	public:
+		void PrepareMesh();
+		void LoadData(std::string model, std::string type);
+		std::string img_src;
 		std::vector<Vertex> data;
+	public:
 		Mesh() {};
 		Mesh(std::string path, std::string type);
 		void RenderMesh(Shader shader, std::string mode);
 		void DestroyMesh();
-		std::string img_src;
+		void ApplyTexture(std::string textureFile);
+		std::vector<Vertex> GetData();
 };
 
-Mesh::Mesh(std::string model, std::string type = "obj_vtnf")
-{
+Mesh::Mesh(std::string model, std::string type = "obj_vtnf") {
+	LoadData(model, type);
+	PrepareMesh();
+}
+
+void Mesh::LoadData(std::string model, std::string type) {
 	std::string path = "";
 	if (type == "obj_vtnf")
 	{
@@ -41,11 +49,11 @@ Mesh::Mesh(std::string model, std::string type = "obj_vtnf")
 	}
 }
 
-void Mesh::RenderMesh(Shader shader, std::string mode = "triangle") {
+void Mesh::PrepareMesh() {
 	VAO1.Bind();
 	VBO1.Bind();
 	VBO1.AttachData(data);
-	
+
 	int number_data_points = data[0].positions.length() + data[0].normals.length() + data[0].textures.length();
 	if (number_data_points == 3) {
 		VAO1.LinkVBO(VBO1, 0, 3, GL_FLOAT, (void*)0);
@@ -60,15 +68,21 @@ void Mesh::RenderMesh(Shader shader, std::string mode = "triangle") {
 		VAO1.LinkVBO(VBO1, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
 	}
 	VAO1.Unbind();
+}
+
+void Mesh::ApplyTexture(std::string textureFile) {
+	img_src = textureFile;
+	std::string folder = img_src.substr(0, img_src.length() - 4);
+	texture = Texture(("./Resources/Models/" + folder + "/" + img_src).c_str(), GL_RGBA);
+}
+
+void Mesh::RenderMesh(Shader shader, std::string mode = "triangle") {
 
 	if (img_src.length() > 0) {
-		std::string folder = img_src.substr(0, img_src.length() - 4);
-		texture = Texture(("./Resources/Models/"+ folder + "/" + img_src).c_str(), GL_RGBA);
 		shader.setInt("ourTexture", 0);
 		texture.ActiveTexture(0);
 		texture.Bind();
 	}
-
 	if (mode == "triangle") {
 		// render Cube
 		glBindVertexArray(VAO1.ID);
@@ -81,7 +95,10 @@ void Mesh::RenderMesh(Shader shader, std::string mode = "triangle") {
 		glDrawArrays(GL_POINTS, 0, data.size());
 		glBindVertexArray(0);
 	}
-	
+}
+
+std::vector<Vertex> Mesh::GetData() {
+	return data;
 }
 
 void Mesh::DestroyMesh(){

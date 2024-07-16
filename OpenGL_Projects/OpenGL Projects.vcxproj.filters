@@ -42,10 +42,13 @@
     <ClInclude Include="Dependencies\Header\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\Header\CubeMap.h">
+    <ClInclude Include="Dependencies\Header\FBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\Header\Grid.h">
+    <ClInclude Include="Dependencies\Header\Shadow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Header\CubeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,10 +56,5 @@
     <None Include="Resources\Shaders\vShaderSource.vs" />
     <None Include="Resources\Shaders\fShaderSource.fs" />
     <None Include="Resources\Shaders\gShaderSource.gs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

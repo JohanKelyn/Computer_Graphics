@@ -7,7 +7,7 @@
 #include<string>
 #include "Mesh.h"
 
-class CUBEMAP 
+class CUBEMAP
 {
 private:
 	unsigned int ID;
@@ -28,15 +28,15 @@ CUBEMAP::CUBEMAP(std::string filename) {
 	skyboxMesh = Mesh("Cube");
 	skyboxVAO.Bind();
 	skyboxVBO.Bind();
-	skyboxVBO.AttachData(skyboxMesh.data);
+	skyboxVBO.AttachData(skyboxMesh.GetData());
 	skyboxVAO.LinkVBO(skyboxVBO, 0, 3, GL_FLOAT, (void*)0);
 	skyboxVAO.Unbind();
 
-	
+
 	glGenTextures(1, &cubemapTexture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
-	std::vector<std::string> textures_faces {
+	std::vector<std::string> textures_faces{
 		filepath + filename + "/posx.jpg",
 		filepath + filename + "/negx.jpg",
 		filepath + filename + "/posy.jpg",
@@ -47,6 +47,7 @@ CUBEMAP::CUBEMAP(std::string filename) {
 
 	for (unsigned int i = 0; i < 6; i++)
 	{
+		stbi_set_flip_vertically_on_load(true);
 		data = stbi_load(textures_faces[i].c_str(), &width, &height, &channels, 0);
 		if (data)
 		{
@@ -77,7 +78,7 @@ void CUBEMAP::RenderCubeMap(Shader shader) {
 	skyboxVAO.Bind();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-	glDrawArrays(GL_TRIANGLES, 0, skyboxMesh.data.size());
+	glDrawArrays(GL_TRIANGLES, 0, skyboxMesh.GetData().size());
 	skyboxVAO.Unbind();
 	glDepthFunc(GL_LESS); // set depth function back to default
 }
@@ -86,11 +87,3 @@ void CUBEMAP::DestroyCubeMap() {
 	skyboxVAO.Delete();
 	skyboxVBO.Delete();
 }
-	
-
-
-
-
-
-
-

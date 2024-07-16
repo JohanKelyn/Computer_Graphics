@@ -8,11 +8,6 @@
 static float deltaTime = 0.0;
 float lastFrame = 0.0f;
 
-glm::vec3 camera_position(0.0f, 0.0f, 5.0f);
-static Camera camera(camera_position);
-
-static glm::vec3 light_position(-10.0, 50.0, 10.0);
-
 class RenderWindow
 {
 	public:
