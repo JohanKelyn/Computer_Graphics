@@ -7,26 +7,34 @@
 class Texture
 {
 	public:
-		Texture() { ID = 0; };
+		Texture();
 		Texture(const char* image, GLenum format);
+		void GenerateTexture();
 		void ActiveTexture(int i);
 		void Bind();
 		void Unbind();
 		void Delete();
+		void SetParameters();
+		GLuint GetID();
 	private:
-		unsigned int ID = 0;
+		GLuint ID = 0;
 		GLenum type = GL_TEXTURE_2D;
 		
 };
 
+Texture::Texture() {
+	ID = 0;
+}
+
+void Texture::GenerateTexture() {
+	glGenTextures(1, &ID);
+}
+
 Texture::Texture(const char* image, GLenum format)
 {
-	glGenTextures(1, &ID);
-	glBindTexture(GL_TEXTURE_2D, ID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GenerateTexture();
+	Bind();
+	SetParameters();
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(image, &width, &height, &nrChannels, 0);
@@ -60,4 +68,15 @@ void Texture::Unbind()
 void Texture::Delete()
 {
 	glDeleteTextures(1, &ID);
+}
+
+GLuint Texture::GetID() {
+	return ID;
+}
+
+void Texture::SetParameters() {
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }

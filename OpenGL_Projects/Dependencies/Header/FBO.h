@@ -2,14 +2,20 @@
 #include<GL/glew.h>
 
 class FBO {
-public:
+private:
 	GLuint ID;
-	FBO() { ID = 0; };
+public:
+	FBO();
 	void GenerateFrameBuffer();
 	void Bind();
 	void Unbind();
 	void Delete();
+	GLuint getID();
 };
+
+FBO::FBO() {
+	ID = 0;
+}
 
 void FBO::GenerateFrameBuffer() {
 	glGenFramebuffers(1, &ID);
@@ -29,4 +35,8 @@ void FBO::Unbind()
 void FBO::Delete()
 {
 	glDeleteBuffers(1, &ID);
+}
+
+GLuint FBO::getID() {
+	return ID;
 }

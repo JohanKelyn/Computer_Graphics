@@ -97,6 +97,8 @@ static void loadObjFull(const char* path, std::vector<Vertex> &verts)
 		}
 	}
 
+
+
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
 		unsigned int verIndex = vertexIndices[i];

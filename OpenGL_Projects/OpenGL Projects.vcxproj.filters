@@ -51,10 +51,18 @@
     <ClInclude Include="Dependencies\Header\CubeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\Header\ShadowMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\vShaderSource.vs" />
     <None Include="Resources\Shaders\fShaderSource.fs" />
     <None Include="Resources\Shaders\gShaderSource.gs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Projects\Project_5\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

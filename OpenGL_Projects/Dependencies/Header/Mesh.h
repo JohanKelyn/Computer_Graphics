@@ -25,6 +25,7 @@ class Mesh
 		void DestroyMesh();
 		void ApplyTexture(std::string textureFile);
 		std::vector<Vertex> GetData();
+		GLuint getTextureID();
 };
 
 Mesh::Mesh(std::string model, std::string type = "obj_vtnf") {
@@ -105,6 +106,10 @@ void Mesh::DestroyMesh(){
 	VAO1.Delete();
 	VBO1.Delete();
 	texture.Delete();
+}
+
+GLuint Mesh::getTextureID() {
+	return texture.GetID();
 }
 
 
