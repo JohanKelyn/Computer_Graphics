@@ -7,6 +7,8 @@
 #include<string>
 #include "Mesh.h"
 
+std::string filepath = "./Resources/Textures/";
+
 class CUBEMAP
 {
 private:
@@ -14,7 +16,6 @@ private:
 	Mesh skyboxMesh;
 	VAO skyboxVAO;
 	VBO skyboxVBO;
-	std::string filepath = "./Resources/Textures/";
 	int width, height, channels;
 	unsigned char* data;
 	unsigned int cubemapTexture;

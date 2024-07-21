@@ -5,6 +5,7 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "Texture.h"
+#include "Shader.h"
 
 class Mesh
 {

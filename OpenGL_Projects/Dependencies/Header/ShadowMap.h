@@ -25,7 +25,7 @@ void ShadowMap::init() {
 	Texture.GenerateTexture();
 	Texture.Bind();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, WIDTH, HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	Texture.SetParameters();
+	Texture.SetParameters("shadow");
 	FBO.Bind();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Texture.GetID(), 0);
 	glDrawBuffer(GL_NONE);
