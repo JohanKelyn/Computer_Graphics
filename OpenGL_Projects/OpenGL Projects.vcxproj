@@ -116,13 +116,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\Header;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libigl\include;$(SolutionDir)Dependencies\Eigen;$(SolutionDir)Dependencies\stb\ASSIMP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\Header;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libigl\include;$(SolutionDir)Dependencies\Eigen;$(SolutionDir)Dependencies\ASSIMP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\x64;$(SolutionDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\x64;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)\Dependencies\ASSIMP\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,8 +149,8 @@
     <ClInclude Include="Dependencies\Header\CubeMap.h" />
     <ClInclude Include="Dependencies\Header\EBO.h" />
     <ClInclude Include="Dependencies\Header\FBO.h" />
-    <ClInclude Include="Dependencies\Header\FileLoader.h" />
-    <ClInclude Include="Dependencies\Header\Mesh.h" />
+    <ClInclude Include="Dependencies\Header\Mesh2.h" />
+    <ClInclude Include="Dependencies\Header\Model.h" />
     <ClInclude Include="Dependencies\Header\RenderWindow.h" />
     <ClInclude Include="Dependencies\Header\Shader.h" />
     <ClInclude Include="Dependencies\Header\Shadow.h" />
@@ -158,6 +158,7 @@
     <ClInclude Include="Dependencies\Header\Texture.h" />
     <ClInclude Include="Dependencies\Header\VAO.h" />
     <ClInclude Include="Dependencies\Header\VBO.h" />
+    <ClInclude Include="Dependencies\Header\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\fShaderSource.fs" />
@@ -165,7 +166,6 @@
     <None Include="Resources\Shaders\vShaderSource.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Projects\Project_5\main.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kagome
+* source:	https://sketchfab.com/3d-models/kagome-46db3eb9c08640e78d674a022957f70d
+* author:	deankagura (https://sketchfab.com/deankagura)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kagome" (https://sketchfab.com/3d-models/kagome-46db3eb9c08640e78d674a022957f70d) by deankagura (https://sketchfab.com/deankagura) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,4 +1,4 @@
-#pragma once
+cc#pragma once
 #include "FileLoader.h"
 #include<vector>
 #include "VAO.h"
@@ -10,7 +10,6 @@
 class Mesh
 {
 	private:
-		
 		VAO VAO1;
 		VBO VBO1;
 		EBO EBO1;

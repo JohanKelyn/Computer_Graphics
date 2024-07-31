@@ -1,6 +1,6 @@
 #include"RenderWindow.h"
 #include"Shader.h"
-#include"Mesh.h"
+#include"Model.h"
 #include"CubeMap.h"
 #include"Camera.h"
 #include<stb_image.h>
@@ -16,9 +16,7 @@ int main()
 	Shader trumpShader("Project3/trumpShader.vs", "Project3/trumpShader.fs");
 	Shader skyboxShader("Project3/vShaderSource.vs", "Project3/fShaderSource.fs");
 
-	Mesh TrumpMesh("Trump");
-	TrumpMesh.ApplyTexture("Trump.png");
-	
+	Model TrumpMesh("./Resources/Models/Trump/Trump.obj");
 	CUBEMAP Cubemap("Chapel");
 
 	while (!renderWindow.windowActive())
@@ -36,9 +34,9 @@ int main()
 		trumpShader.setMat4("model", model);
 		trumpShader.setMat4("view", view);
 		trumpShader.setMat4("projection", projection);
-		TrumpMesh.RenderMesh(trumpShader);
+		TrumpMesh.Draw(trumpShader);
 
-
+		
 		// draw skybox as last
 		model = glm::mat4(1.0f);
 		model = glm::rotate(model, (float)glm::radians(180.0), glm::vec3(0.0f, 0.0f, -1.0f));
@@ -48,11 +46,11 @@ int main()
 		skyboxShader.setMat4("projection", projection);
 		Cubemap.RenderCubeMap(skyboxShader);
 		
+		
 		renderWindow.update();
 	}
 
 	
-	TrumpMesh.DestroyMesh();
 	Cubemap.DestroyCubeMap();
 	renderWindow.close();
 	return 0;

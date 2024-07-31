@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sesshomaru
+* source:	https://sketchfab.com/3d-models/sesshomaru-9f3e31140ad94bb7819a4b7566fe16f8
+* author:	deankagura (https://sketchfab.com/deankagura)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sesshomaru" (https://sketchfab.com/3d-models/sesshomaru-9f3e31140ad94bb7819a4b7566fe16f8) by deankagura (https://sketchfab.com/deankagura) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

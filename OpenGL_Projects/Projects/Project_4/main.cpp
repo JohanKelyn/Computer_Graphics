@@ -1,6 +1,6 @@
 #include"RenderWindow.h"
 #include"Shader.h"
-#include"Mesh.h"
+#include"Model.h"
 
 
 int main()
@@ -12,11 +12,9 @@ int main()
 	renderWindow.setBackground(0.87, 0.8, 1.0);
 
 	Shader shader1("Project4/vShaderSource.vs", "Project4/fShaderSource.fs");
-	Mesh mesh1("Trump");
-	mesh1.ApplyTexture("Trump.png");
-	
-	Mesh mesh2("Floor");
-	mesh2.ApplyTexture("Floor.png");
+
+	Model Trump("./Resources/Models/Trump/Trump.obj");
+	Model Floor("./Resources/Models/Floor/Floor.obj");
 
 
 	while (!renderWindow.windowActive())
@@ -36,19 +34,17 @@ int main()
 		
 		model = glm::translate(model, glm::vec3(0.0, -0.8, 0.0));
 		shader1.setMat4("model", model);
-		mesh1.RenderMesh(shader1);
+		Trump.Draw(shader1);
 
 		model = glm::mat4(1.0f);
 		shader1.setMat4("model", model);
-		mesh2.RenderMesh(shader1);
+		Floor.Draw(shader1);
 
 		renderWindow.update();
 	}
 
 	shader1.Delete();
-	mesh1.DestroyMesh();
 	shader1.Delete();
-	mesh2.DestroyMesh();
 
 	renderWindow.close();
 	return 0;

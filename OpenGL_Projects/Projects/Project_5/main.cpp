@@ -1,6 +1,6 @@
 #include"RenderWindow.h"
 #include"Shader.h"
-#include"Mesh.h"
+#include"Model.h"
 #include"ShadowMap.h"
 
 
@@ -17,14 +17,9 @@ int main()
 	Shader shader1("Project5/vShaderSource.vs", "Project5/fShaderSource.fs");
 	Shader shader2("Project5/vShadowShaderSource.vs", "Project5/fShadowShaderSource.fs");
 	
-	Mesh mesh1("Trump");
-	mesh1.ApplyTexture("Trump.png");
-
-	Mesh mesh2("Fox");
-	mesh2.ApplyTexture("Fox.png");
-	
-	Mesh mesh3("Floor");
-	mesh3.ApplyTexture("Floor.png");
+	Model Trump("./Resources/Models/Trump/Trump.obj");
+	Model Fox("./Resources/Models/Fox/Fox.obj");
+	Model Floor("./Resources/Models/Floor/Floor.obj");
 
 	while (!renderWindow.windowActive())
 	{
@@ -49,7 +44,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-0.5, -1.0, 0.0));
 		shader2.setMat4("model", model);
 		shader2.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-		mesh1.RenderMesh(shader2);
+		Trump.Draw(shader2);
 		
 
 		model = glm::mat4(1.0f);
@@ -57,7 +52,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.01));
 		
 		shader2.setMat4("model", model);
-		mesh2.RenderMesh(shader2);
+		Fox.Draw(shader2);
 		
 		shadowMap.Unbind();
 
@@ -71,33 +66,30 @@ int main()
 		shader1.setVec3("lightPos", light_position);
 		shader1.setVec3("viewPos", camera.Position);
 		shader1.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-		shadowMap.Texture.ActiveTexture(1);
-		shadowMap.Texture.Bind();
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shadowMap.Texture.id);
 		
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-0.5, -1.0, 0.0));
 		shader1.setMat4("model", model);
-		mesh1.RenderMesh(shader1);
+		Trump.Draw(shader1);
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.5, -1.0, 0.0));
 		model = glm::scale(model, glm::vec3(0.01));
 		
 		shader1.setMat4("model", model);
-		mesh2.RenderMesh(shader1);
+		Fox.Draw(shader1);
 
 		model = glm::mat4(1.0f);
 		shader1.setMat4("model", model);
-		mesh3.RenderMesh(shader1);
+		Floor.Draw(shader1);
 
 		renderWindow.update();
 	}
 
 	shader1.Delete();
-	mesh1.DestroyMesh();
 	shader2.Delete();
-	mesh2.DestroyMesh();
-	mesh3.DestroyMesh();
 
 	renderWindow.close();
 	return 0;

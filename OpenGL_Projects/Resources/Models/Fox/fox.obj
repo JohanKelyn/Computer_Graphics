@@ -1,6 +1,6 @@
 # Blender v2.74 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib Lowpoly_Fox.mtl
+mtllib Fox.mtl
 o fox1
 v 10.013863 57.761101 8.092894
 v 11.597156 30.546070 -26.744658
@@ -1192,7 +1192,7 @@ vn -0.967200 0.054700 -0.248200
 vn 0.967200 0.054600 -0.248200
 vn 0.005300 0.000200 1.000000
 vn -0.005300 0.000200 1.000000
-usemtl fox_material
+usemtl FoxLPmat
 s 1
 f 31/1/1 94/2/1 145/3/1
 f 117/4/2 14/5/2 37/6/2

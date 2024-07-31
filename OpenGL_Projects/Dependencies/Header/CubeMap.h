@@ -5,7 +5,7 @@
 #include<iostream>
 #include<vector>
 #include<string>
-#include "Mesh.h"
+#include"Model.h"
 
 std::string filepath = "./Resources/Textures/";
 
@@ -13,7 +13,7 @@ class CUBEMAP
 {
 private:
 	unsigned int ID;
-	Mesh skyboxMesh;
+	std::vector<Vertex> vertices;
 	VAO skyboxVAO;
 	VBO skyboxVBO;
 	int width, height, channels;
@@ -26,10 +26,11 @@ public:
 };
 
 CUBEMAP::CUBEMAP(std::string filename) {
-	skyboxMesh = Mesh("Cube");
+	Model cube("./Resources/Models/Cube/Cube.obj");
+	vertices = cube.meshes[0].vertices;
 	skyboxVAO.Bind();
 	skyboxVBO.Bind();
-	skyboxVBO.AttachData(skyboxMesh.GetData());
+	skyboxVBO.AttachData(vertices);
 	skyboxVAO.LinkVBO(skyboxVBO, 0, 3, GL_FLOAT, (void*)0);
 	skyboxVAO.Unbind();
 
@@ -79,7 +80,7 @@ void CUBEMAP::RenderCubeMap(Shader shader) {
 	skyboxVAO.Bind();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-	glDrawArrays(GL_TRIANGLES, 0, skyboxMesh.GetData().size());
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	skyboxVAO.Unbind();
 	glDepthFunc(GL_LESS); // set depth function back to default
 }

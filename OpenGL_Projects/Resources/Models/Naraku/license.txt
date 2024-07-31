@@ -1,0 +1,11 @@
+Model Information:
+* title:	Naraku
+* source:	https://sketchfab.com/3d-models/naraku-3312dfe1d19342feb6b68a7405524bf4
+* author:	deankagura (https://sketchfab.com/deankagura)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Naraku" (https://sketchfab.com/3d-models/naraku-3312dfe1d19342feb6b68a7405524bf4) by deankagura (https://sketchfab.com/deankagura) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

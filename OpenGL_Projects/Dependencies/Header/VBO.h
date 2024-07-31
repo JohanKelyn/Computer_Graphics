@@ -1,6 +1,7 @@
 #pragma once
 #include<GL/glew.h>
-#include "Mesh.h"
+#include "Mesh2.h"
+#include "Vertex.h"
 
 class VBO
 {
@@ -18,31 +19,26 @@ public:
 	void Delete();
 };
 
-VBO::VBO()
-{
+VBO::VBO() {
 	glGenBuffers(1, &ID);
 }
 
-void VBO::AttachData(std::vector<Vertex> vertices)
-{
+void VBO::AttachData(std::vector<Vertex> vertices) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() *  sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 }
 
 // Binds the VBO
-void VBO::Bind()
-{
+void VBO::Bind() {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
 // Unbinds the VBO
-void VBO::Unbind()
-{
+void VBO::Unbind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // Deletes the VBO
-void VBO::Delete()
-{
+void VBO::Delete() {
 	glDeleteBuffers(1, &ID);
 }
