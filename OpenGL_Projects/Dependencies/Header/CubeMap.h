@@ -12,14 +12,13 @@ std::string filepath = "./Resources/Textures/";
 class CUBEMAP
 {
 private:
-	unsigned int ID;
+	GLuint ID;
 	std::vector<Vertex> vertices;
-	VAO skyboxVAO;
-	VBO skyboxVBO;
-	int width, height, channels;
-	unsigned char* data;
-	unsigned int cubemapTexture;
+	VAO VAO;
+	VBO VBO;
+	Texture cubemapTexture;
 public:
+	CUBEMAP() { ID = 0; }
 	CUBEMAP(std::string filename);
 	void RenderCubeMap(Shader shader);
 	void DestroyCubeMap();
@@ -28,15 +27,14 @@ public:
 CUBEMAP::CUBEMAP(std::string filename) {
 	Model cube("./Resources/Models/Cube/Cube.obj");
 	vertices = cube.meshes[0].vertices;
-	skyboxVAO.Bind();
-	skyboxVBO.Bind();
-	skyboxVBO.AttachData(vertices);
-	skyboxVAO.LinkVBO(skyboxVBO, 0, 3, GL_FLOAT, (void*)0);
-	skyboxVAO.Unbind();
+	VAO.Bind();
+	VBO.Bind();
+	VBO.AttachData(vertices);
+	VAO.LinkVBO(VBO, 0, 3, GL_FLOAT, (void*)0);
+	VAO.Unbind();
 
-
-	glGenTextures(1, &cubemapTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	cubemapTexture.GenerateTexture();
+	cubemapTexture.Bind(GL_TEXTURE_CUBE_MAP);
 
 	std::vector<std::string> textures_faces{
 		filepath + filename + "/posx.jpg",
@@ -50,10 +48,11 @@ CUBEMAP::CUBEMAP(std::string filename) {
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		stbi_set_flip_vertically_on_load(true);
-		data = stbi_load(textures_faces[i].c_str(), &width, &height, &channels, 0);
+		int width, height, channels;
+		unsigned char* data = stbi_load(textures_faces[i].c_str(), &width, &height, &channels, 0);
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			cubemapTexture.AttachCubeMapImage(i, width, height, data);
 			stbi_image_free(data);
 		}
 		else
@@ -62,30 +61,24 @@ CUBEMAP::CUBEMAP(std::string filename) {
 			stbi_image_free(data);
 		}
 	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	cubemapTexture.SetParameters("cubeMap");
 }
 
 void CUBEMAP::RenderCubeMap(Shader shader) {
 	shader.use();
 	shader.setInt("skybox", 0);
 
-	// skybox cube
+	//box cube
 	glDepthFunc(GL_LEQUAL);
-	glBindVertexArray(skyboxVAO.ID);
-	skyboxVAO.Bind();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	VAO.Bind();
+	cubemapTexture.ActiveTexture(0);
+	cubemapTexture.Bind(GL_TEXTURE_CUBE_MAP);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	skyboxVAO.Unbind();
+	VAO.Unbind();
 	glDepthFunc(GL_LESS); // set depth function back to default
 }
 
 void CUBEMAP::DestroyCubeMap() {
-	skyboxVAO.Delete();
-	skyboxVBO.Delete();
+	VAO.Delete();
+	VBO.Delete();
 }

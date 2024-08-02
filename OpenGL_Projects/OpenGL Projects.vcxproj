@@ -149,6 +149,7 @@
     <ClInclude Include="Dependencies\Header\CubeMap.h" />
     <ClInclude Include="Dependencies\Header\EBO.h" />
     <ClInclude Include="Dependencies\Header\FBO.h" />
+    <ClInclude Include="Dependencies\Header\Helper.h" />
     <ClInclude Include="Dependencies\Header\Mesh2.h" />
     <ClInclude Include="Dependencies\Header\Model.h" />
     <ClInclude Include="Dependencies\Header\RenderWindow.h" />
@@ -164,9 +165,6 @@
     <None Include="Resources\Shaders\fShaderSource.fs" />
     <None Include="Resources\Shaders\gShaderSource.gs" />
     <None Include="Resources\Shaders\vShaderSource.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

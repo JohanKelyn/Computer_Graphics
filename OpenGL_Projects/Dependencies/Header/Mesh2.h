@@ -50,7 +50,7 @@ void Mesh2::Draw(Shader &shader) {
 	GLuint specularNr = 1;
 
 	for (GLuint i = 0; i < textures.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
+		textures[i].ActiveTexture(i);
 		std::string number;
 		std::string name = textures[i].type;
 		if (name == "texture_diffuse")
@@ -59,7 +59,7 @@ void Mesh2::Draw(Shader &shader) {
 			number = std::to_string(specularNr++);
 
 		shader.setInt((name + number).c_str(), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		textures[i].Bind();
 	}
 	glActiveTexture(GL_TEXTURE0);
 

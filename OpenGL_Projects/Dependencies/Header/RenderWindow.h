@@ -11,8 +11,8 @@ float lastFrame = 0.0f;
 class RenderWindow
 {
 	public:
-		unsigned int width = 800;
-		unsigned int height = 600;
+		unsigned int width = 1280;
+		unsigned int height = 1024;
 		RenderWindow(const char* title, const unsigned int w, const unsigned int h);
 		void enableFeature(bool depth, bool stencil, bool blend);
 		void setBackground(const float r, const float g, const float b);
@@ -34,7 +34,7 @@ class RenderWindow
 		void Init();
 };
 
-RenderWindow::RenderWindow(const char* title, const unsigned int w = 800, const unsigned int h = 600)
+RenderWindow::RenderWindow(const char* title, const unsigned int w = 1024, const unsigned int h = 840)
 {
 	width = w;
 	height = h;
