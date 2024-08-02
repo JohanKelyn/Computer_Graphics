@@ -1,15 +1,1 @@
-﻿  main.cpp
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\RenderWindow.h(30,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\RenderWindow.h(32,47): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\RenderWindow.h(88,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Helper.h(128,19): warning C4101: 'f2': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Helper.h(128,15): warning C4101: 'f1': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Helper.h(128,23): warning C4101: 'f3': unreferenced local variable
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Mesh2.h(67,65): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project_2\main.cpp(10,43): warning C4305: 'argument': truncation from 'double' to 'const float'
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project_2\main.cpp(35,42): warning C4305: 'argument': truncation from 'double' to 'T'
-          with
-          [
-              T=float
-          ]
-  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
+﻿  OpenGL Projects.vcxproj -> C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\x64\Debug\OpenGL Projects.exe
