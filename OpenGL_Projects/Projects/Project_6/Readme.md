@@ -1,6 +1,8 @@
-# Project 5: Shadow Mapping
+
+# Project 6: Shadow Mapping - Omnidirectional
 ## Description
-This project 3D model together with Phong Lighting and Shadow Mapping. The project is a continuation of project 4.
+This project 3D model together with Phong Lighting and Omnidirectional Shadow Mapping. The project is a continuation of project 5.
 
 ## Results
-![](../../Resources/Images/proj5.png?raw=true)
+![](../../Resources/Images/proj6.png?raw=true)
+
