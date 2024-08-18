@@ -7,7 +7,7 @@ private:
 public:
 	FBO();
 	void GenerateFrameBuffer();
-	void AttachTexture(GLuint id);
+	void AttachTexture(GLuint id, std::string type);
 	void Bind();
 	void Unbind();
 	void Delete();
@@ -22,8 +22,11 @@ void FBO::GenerateFrameBuffer() {
 	glGenFramebuffers(1, &ID);
 }
 
-void FBO::AttachTexture(GLuint id) {
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, id, 0);
+void FBO::AttachTexture(GLuint id, std::string type = "texture") {
+	if (type == "texture")
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, id, 0);
+	else if (type == "cubemap")
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
 }
 
 void FBO::Bind()

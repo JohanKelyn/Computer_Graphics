@@ -14,7 +14,7 @@ struct Texture
         
         void GenerateTexture();
         void SetParameters(std::string type);
-        void AttachShadowImage(GLenum format, int width, int height);
+        void AttachShadowImage(GLenum format, int width, int height, std::string type);
         void AttachCubeMapImage(GLuint i, int width, int height, unsigned char* data);
         void AttachImage(GLenum format, int width, int height, unsigned char* data);
         void LoadTextureFromFile(const char* path, const std::string& directory);
@@ -27,8 +27,9 @@ void Texture::GenerateTexture() {
     glGenTextures(1, &id);
 }
 
-void Texture::AttachShadowImage(GLenum format, int width, int height) {
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_FLOAT, NULL);
+void Texture::AttachShadowImage(GLenum format, int width, int height, std::string type = "2D") {
+    if (type == "2D")
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_FLOAT, NULL);
 }
 
 void Texture::AttachCubeMapImage(GLuint i, int width, int height, unsigned char* data) {

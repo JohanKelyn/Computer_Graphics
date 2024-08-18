@@ -1,0 +1,41 @@
+# Blender MTL File: 'RED GATE.blend'
+# Material Count: 4
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl Red_Painted_Metal_Worn
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.371238 0.013702 0.028426
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Red_Painted_Metal_Worn.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.023406 0.014542 0.013595
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+refl C:\\Users\\thetu\\blenderkit_data\\materials\\red_painted_metal_worn_b6f91ed8-4ac8-4ca2-9330-90e14e997de0\\textures_1k\\GWC Red Paint Worn Hi_metallic.jpg

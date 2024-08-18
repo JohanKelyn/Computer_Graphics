@@ -9,6 +9,7 @@ public:
 	Model(std::string path);
 	void Draw(Shader& shader);
 	std::vector<Mesh2> meshes;
+	glm::mat4 model = glm::mat4(1.0f);
 private:
 	std::vector<Texture> textures_loaded;
 	std::string directory;
@@ -24,6 +25,7 @@ Model::Model(std::string path) {
 }
 
 void Model::Draw(Shader& shader) {
+	shader.setMat4("model", model);
 	for (GLuint i = 0; i < meshes.size(); i++) {
 		meshes[i].Draw(shader);
 	}

@@ -2,12 +2,12 @@
 #include<GL/glew.h>
 #include"FBO.h"
 #include"Texture.h"
+#include"CubeMap.h"
 
 class ShadowMap {
-private:
+public:
 	int WIDTH = 1024;
 	int HEIGHT = 1024;
-public:
 	ShadowMap(std::string type);
 	FBO FBO;
 	Texture Texture;
@@ -20,7 +20,7 @@ public:
 ShadowMap::ShadowMap(std::string type) {
 	if(type == "DirectionalShadow")
 		initDirectionalShadowMap();
-	else
+	else if(type == "OmniDirectionalShadow")
 		initOmniDirectionalShadowMap();
 }
 
@@ -38,7 +38,18 @@ void ShadowMap::initDirectionalShadowMap() {
 }
 
 void ShadowMap::initOmniDirectionalShadowMap() {
-
+	FBO.GenerateFrameBuffer();
+	Texture.GenerateTexture();
+	Texture.Bind(GL_TEXTURE_CUBE_MAP);
+	for (GLuint i = 0; i < 6; ++i) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, WIDTH, HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	}
+	Texture.SetParameters("cubeMap");
+	FBO.Bind();
+	FBO.AttachTexture(Texture.id, "cubemap");
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	FBO.Unbind();
 }
 
 void ShadowMap::Bind() {
