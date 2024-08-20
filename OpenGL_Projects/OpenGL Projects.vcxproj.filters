@@ -67,7 +67,7 @@
     <None Include="Resources\Shaders\gShaderSource.gs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Projects\Project_6\main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
