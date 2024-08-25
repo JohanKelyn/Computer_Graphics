@@ -11,17 +11,17 @@ C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Depe
 C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Sphere.h(90,11): warning C4244: '=': conversion from 'float' to 'GLuint', possible loss of data
 C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Sphere.h(77,14): warning C4101: 'normal': unreferenced local variable
 C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Dependencies\Header\Sphere.h(138,65): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project7\main.cpp(44,61): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project_7\main.cpp(44,61): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project7\main.cpp(50,59): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project_7\main.cpp(50,59): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project7\main.cpp(62,64): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Johan\OneDrive\Documentos\GitHub\Computer_Graphics\OpenGL_Projects\Projects\Project_7\main.cpp(62,64): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float

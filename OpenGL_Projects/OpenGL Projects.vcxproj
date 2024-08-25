@@ -168,7 +168,7 @@
     <None Include="Resources\Shaders\vShaderSource.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Projects\Project7\main.cpp" />
+    <ClCompile Include="Projects\Project_7\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
