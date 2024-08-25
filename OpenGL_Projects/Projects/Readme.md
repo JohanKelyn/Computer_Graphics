@@ -8,3 +8,4 @@ This folder contains all my personal projects using OpenGL
 * <strong>Project4:</strong> 3D Model with Phong Lighting
 * <strong>Project5:</strong> 3D Model with Phong Lighting & Shadow Mapping
 * <strong>Project6:</strong> 3D Model with Phong Lighting & Omnidirectional Mapping within a Cubemap
+* <strong>Project7:</strong> Solar System Simulation with Phong Lighting, Omnidirectional Mapping, and CubeMap
