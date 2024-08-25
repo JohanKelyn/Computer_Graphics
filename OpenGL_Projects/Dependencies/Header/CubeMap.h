@@ -47,7 +47,7 @@ CUBEMAP::CUBEMAP(std::string filename) {
 
 	for (unsigned int i = 0; i < 6; i++)
 	{
-		stbi_set_flip_vertically_on_load(true);
+		//stbi_set_flip_vertically_on_load(true);
 		int width, height, channels;
 		unsigned char* data = stbi_load(textures_faces[i].c_str(), &width, &height, &channels, 0);
 		if (data)

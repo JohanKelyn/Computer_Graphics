@@ -156,6 +156,7 @@
     <ClInclude Include="Dependencies\Header\Shader.h" />
     <ClInclude Include="Dependencies\Header\Shadow.h" />
     <ClInclude Include="Dependencies\Header\ShadowMap.h" />
+    <ClInclude Include="Dependencies\Header\Sphere.h" />
     <ClInclude Include="Dependencies\Header\Texture.h" />
     <ClInclude Include="Dependencies\Header\VAO.h" />
     <ClInclude Include="Dependencies\Header\VBO.h" />
@@ -167,7 +168,7 @@
     <None Include="Resources\Shaders\vShaderSource.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="Projects\Project7\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

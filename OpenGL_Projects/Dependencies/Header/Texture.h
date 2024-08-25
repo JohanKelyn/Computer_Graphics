@@ -14,6 +14,7 @@ struct Texture
         
         void GenerateTexture();
         void SetParameters(std::string type);
+        void AttachBufferImage(GLenum format, int width, int height, std::string type);
         void AttachShadowImage(GLenum format, int width, int height, std::string type);
         void AttachCubeMapImage(GLuint i, int width, int height, unsigned char* data);
         void AttachImage(GLenum format, int width, int height, unsigned char* data);
@@ -30,6 +31,11 @@ void Texture::GenerateTexture() {
 void Texture::AttachShadowImage(GLenum format, int width, int height, std::string type = "2D") {
     if (type == "2D")
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_FLOAT, NULL);
+}
+
+void Texture::AttachBufferImage(GLenum format, int width, int height, std::string type = "2D") {
+    if (type == "2D")
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 }
 
 void Texture::AttachCubeMapImage(GLuint i, int width, int height, unsigned char* data) {
@@ -59,11 +65,17 @@ void Texture::SetParameters(std::string type = "texture") {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-    else if (type == "shadowMap") {
+    else if (type == "blurr") {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    else if (type == "shadowMap") {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
     else if (type == "cubeMap") {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -77,7 +89,7 @@ void Texture::SetParameters(std::string type = "texture") {
 void Texture::LoadTextureFromFile(const char* path, const std::string& directory) {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
-
+    //stbi_set_flip_vertically_on_load(true);
     int width, height, nrComponents;
     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)

@@ -55,7 +55,7 @@ int main()
 		shader2.setVec3("lightPos", light_position);
 
 		glDisable(GL_CULL_FACE); // note that we disable culling here since we render 'inside' the cube instead of the usual 'outside' which throws off the normal culling methods.
-		Cube.Draw(shader2);
+		//Cube.Draw(shader2);
 		glEnable(GL_CULL_FACE);
 		Kikyo.Draw(shader2);
 

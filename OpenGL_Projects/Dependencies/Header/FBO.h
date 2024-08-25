@@ -29,19 +29,16 @@ void FBO::AttachTexture(GLuint id, std::string type = "texture") {
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
 }
 
-void FBO::Bind()
-{
+void FBO::Bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, ID);
 }
 
-void FBO::Unbind()
-{
+void FBO::Unbind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 
-void FBO::Delete()
-{
+void FBO::Delete() {
 	glDeleteBuffers(1, &ID);
 }
 

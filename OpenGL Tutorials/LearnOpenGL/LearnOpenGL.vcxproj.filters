@@ -104,8 +104,6 @@
     <None Include="Chapters\4 - Advanced OpenGL\8 - Advanced_GLSL\5 - Instancing_Arrays\fShaderSource.fs" />
     <None Include="Chapters\4 - Advanced OpenGL\8 - Advanced_GLSL\5 - Instancing_Simple\fShaderSource.fs" />
     <None Include="Chapters\4 - Advanced OpenGL\8 - Advanced_GLSL\5 - Instancing_Simple\vShaderSource.vs" />
-    <None Include="src\fShaderSource.fs" />
-    <None Include="src\vShaderSource.vs" />
     <None Include="Chapters\4 - Advanced OpenGL\8 - Advanced_GLSL\5 - Asteroid\fShaderSource.fs" />
     <None Include="Chapters\4 - Advanced OpenGL\8 - Advanced_GLSL\5 - Asteroid\vShaderSource.vs" />
     <None Include="src\vShaderSource2.vs" />

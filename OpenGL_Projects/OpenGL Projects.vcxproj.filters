@@ -60,6 +60,9 @@
     <ClInclude Include="Dependencies\Header\Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\Header\Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\vShaderSource.vs" />
@@ -67,7 +70,7 @@
     <None Include="Resources\Shaders\gShaderSource.gs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="Projects\Project7\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

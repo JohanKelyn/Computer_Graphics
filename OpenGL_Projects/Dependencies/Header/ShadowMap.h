@@ -50,6 +50,9 @@ void ShadowMap::initOmniDirectionalShadowMap() {
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	FBO.Unbind();
+	Texture.ActiveTexture(1);
+	Texture.Bind(GL_TEXTURE_CUBE_MAP);
+	Texture.ActiveTexture(0);
 }
 
 void ShadowMap::Bind() {
@@ -60,3 +63,5 @@ void ShadowMap::Bind() {
 void ShadowMap::Unbind() {
 	FBO.Unbind();
 }
+
+
