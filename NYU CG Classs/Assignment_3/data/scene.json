@@ -8,8 +8,8 @@
 	"Camera":
 	{
 		"IsPerspective": true,
-		"Position": [0, 0, 5],
-		"FieldOfView": 0.7854,
+		"Position": [0, 0, 10],
+		"FieldOfView": 0.785398163,
 		"FocalLength": 5.0,
 		"LensRadius": 0.08
 	},
@@ -26,31 +26,7 @@
 	],
 	"Lights": [
 		{
-			"Position": [8, 8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [6, -8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [4, 8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [2, -8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [0, 8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [-2, -8, 0],
-			"Color": [16, 16, 16]
-		},
-		{
-			"Position": [-4, 8, 0],
+			"Position": [2, 2, 1],
 			"Color": [16, 16, 16]
 		}
 	],
@@ -58,44 +34,27 @@
 		{
 			"Type": "Sphere",
 			"Material": 0,
-			"Position": [10, 0, 1],
-			"Radius": 1
+			"Position": [1.8, 0.8, 1],
+			"Radius": 0.4
 		},
 		{
 			"Type": "Sphere",
 			"Material": 0,
-			"Position": [7, 0.05, -1],
-			"Radius": 1
+			"Position": [0.8, 1.5, 1],
+			"Radius": 0.3
 		},
 		{
 			"Type": "Sphere",
 			"Material": 0,
-			"Position": [4, 0.1, 1],
+			"Position": [-1.5, 1, 1],
 			"Radius": 1
 		},
 		{
-			"Type": "Sphere",
+			"Type": "Parallelogram",
 			"Material": 0,
-			"Position": [1, 0.2, -1],
-			"Radius": 1
-		},
-		{
-			"Type": "Sphere",
-			"Material": 0,
-			"Position": [-2, 0.4, 1],
-			"Radius": 1
-		},
-		{
-			"Type": "Sphere",
-			"Material": 0,
-			"Position": [-5, 0.8, -1],
-			"Radius": 1
-		},
-		{
-			"Type": "Sphere",
-			"Material": 0,
-			"Position": [-8, 1.6, 1],
-			"Radius": 1
+			"Position": [-5, -1, 5],
+			"u": [5, -1, 5],
+			"v": [-5, -1, -5]
 		}
 	]
 }

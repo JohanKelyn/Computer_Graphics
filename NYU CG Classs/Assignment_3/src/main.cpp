@@ -102,16 +102,50 @@ struct Scene {
 ////////////////////////////////////////////////////////////////////////////////
 
 bool Sphere::intersect(const Ray &ray, Intersection &hit) {
-	// TODO:
-	//
 	// Compute the intersection between the ray and the sphere
 	// If the ray hits the sphere, set the result of the intersection in the
 	// struct 'hit'
+	float a = ray.direction.dot(ray.direction);
+	float b = 2*(ray.direction).dot(ray.origin - position);
+	float c = (ray.origin - position).dot(ray.origin - position) - radius * radius;
+
+	if((b*b - 4*a*c) > 0) {
+		float t1 = (-b + sqrt(b*b - 4*a*c)) / (2*a);
+		float t2 = (-b - sqrt(b*b - 4*a*c)) / (2*a);
+
+		float t = abs(t1) > abs(t2) ? t2 : t1;
+		hit.position = ray.origin + t * ray.direction;;
+		hit.normal = (hit.position - position).normalized();
+		hit.ray_param = t;
+		return true;
+	}
 	return false;
 }
 
 bool Parallelogram::intersect(const Ray &ray, Intersection &hit) {
-	// TODO
+	// Check if the ray intersects with the parallelogram
+		Matrix3d M;
+		M.col(0) = origin - u;
+		M.col(1) = origin - v;
+		M.col(2) = ray.direction;
+
+		Vector3d y = origin - ray.origin;
+
+		Vector3d x = M.colPivHouseholderQr().solve(y);
+
+		if (x(2) > 0 && x(0) > 0 && x(0) <= 1 && x(1) > 0 && x(1) <= 1 && (x(0) + x(1) <= 2) ) {
+			// The ray hit the parallelogram, compute the exact intersection point
+			hit.position = ray.origin + x(2) * ray.direction;
+
+			// Compute normal at the intersection point
+			hit.normal = ((u - origin).cross(v - origin)).normalized();
+
+			// Hit Parameter
+			hit.ray_param = x(2);
+
+			return true;
+		}
+
 	return false;
 }
 
@@ -141,16 +175,24 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 		Vector3d N = hit.normal;
 
 		// TODO: Shoot a shadow ray to determine if the light should affect the intersection point
+		float epsilon = 0.01;
+		Ray shadow_ray;	
+		shadow_ray.origin = hit.position + epsilon * N;
+		shadow_ray.direction = (light.position - hit.position);
+		bool in_shadow = is_light_visible(scene, shadow_ray, light);
 
-		// Diffuse contribution
+		if(in_shadow == false) {
+			// Diffuse contribution
 		Vector3d diffuse = mat.diffuse_color * std::max(Li.dot(N), 0.0);
 
-		// TODO: Specular contribution
-		Vector3d specular(0, 0, 0);
+		// Specular contribution
+		Vector3d h = (scene.camera.position + light.position).normalized();
+		Vector3d specular = mat.specular_color * pow(std::max(N.dot(h),0.0), mat.specular_exponent);
 
 		// Attenuate lights according to the squared distance to the lights
 		Vector3d D = light.position - hit.position;
 		lights_color += (diffuse + specular).cwiseProduct(light.intensity) /  D.squaredNorm();
+		} 
 	}
 
 	// TODO: Compute the color of the reflected ray and add its contribution to the current point color.
@@ -170,12 +212,19 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 
 Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &closest_hit) {
 	int closest_index = -1;
-	// TODO:
-	//
 	// Find the object in the scene that intersects the ray first
 	// The function must return 'nullptr' if no object is hit, otherwise it must
 	// return a pointer to the hit object, and set the parameters of the argument
 	// 'hit' to their expected values.
+	double closest_value = 1000000;
+	for(int i = 0; i < scene.objects.size(); i++) {
+		auto ob = scene.objects[i];
+		bool intersection_happened = ob->intersect(ray, closest_hit);
+		double distance = (closest_hit.position - ray.origin).norm();
+		if((intersection_happened == true) && (distance < closest_value)) {
+			closest_index = i;
+		}
+	}
 
 	if (closest_index < 0) {
 		// Return a NULL pointer
@@ -187,8 +236,16 @@ Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &c
 }
 
 bool is_light_visible(const Scene &scene, const Ray &ray, const Light &light) {
-	// TODO: Determine if the light is visible here
-	return true;
+	// Determine if the light is visible here
+	bool in_shadow = false;
+	for(int i = 0; i < scene.objects.size(); i++) {
+		Intersection hit;
+		if(scene.objects[i]->intersect(ray, hit) && hit.ray_param <= 1 && hit.ray_param >= 0) {
+			in_shadow = true;
+			break;
+		}
+	}
+	return in_shadow;
 }
 
 Vector3d shoot_ray(const Scene &scene, const Ray &ray, int max_bounce) {
@@ -218,8 +275,10 @@ void render_scene(const Scene &scene) {
 	// The sensor grid is at a distance 'focal_length' from the camera center,
 	// and covers an viewing angle given by 'field_of_view'.
 	double aspect_ratio = double(w) / double(h);
-	double scale_y = 1.0; // TODO: Stretch the pixel grid by the proper amount here
-	double scale_x = 1.0; //
+	double tan_half_view = std::tan(scene.camera.field_of_view / 2);
+	double L = 2 * tan_half_view * scene.camera.focal_length;
+	double scale_y = L; // TODO: Stretch the pixel grid by the proper amount here
+	double scale_x = L * aspect_ratio; //
 
 	// The pixel grid through which we shoot rays is at a distance 'focal_length'
 	// from the sensor, and is scaled from the canonical [-1,1] in order
@@ -238,7 +297,8 @@ void render_scene(const Scene &scene) {
 
 			if (scene.camera.is_perspective) {
 				// Perspective camera
-				// TODO
+				ray.origin = scene.camera.position;
+				ray.direction = shift - ray.origin;
 			} else {
 				// Orthographic camera
 				ray.origin = scene.camera.position + Vector3d(shift[0], shift[1], 0);
@@ -315,7 +375,11 @@ Scene load_scene(const std::string &filename) {
 			sphere->radius = entry["Radius"];
 			object = sphere;
 		} else if (entry["Type"] == "Parallelogram") {
-			// TODO
+			auto parallelogram = std::make_shared<Parallelogram>();
+			parallelogram->origin = read_vec3(entry["Position"]);
+			parallelogram->u = read_vec3(entry["u"]);
+			parallelogram->v = read_vec3(entry["v"]);
+			object = parallelogram;
 		}
 		object->material = scene.materials[entry["Material"]];
 		scene.objects.push_back(object);
@@ -327,11 +391,13 @@ Scene load_scene(const std::string &filename) {
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *argv[]) {
+	/*
 	if (argc < 2) {
 		std::cerr << "Usage: " << argv[0] << " scene.json" << std::endl;
 		return 1;
 	}
-	Scene scene = load_scene(argv[1]);
+	*/
+	Scene scene = load_scene("./../data/scene.json");
 	render_scene(scene);
 	return 0;
 }
