@@ -1,0 +1,60 @@
+{
+	"Scene":
+	{
+		"Background": [0.3, 0.3, 0.9],
+		"Ambient": [0.2, 0.2, 0.2]
+	},
+
+	"Camera":
+	{
+		"IsPerspective": true,
+		"Position": [0, 0, 10],
+		"FieldOfView": 0.785398163,
+		"FocalLength": 5.0,
+		"LensRadius": 0.08
+	},
+	"Materials": [
+		{
+			"Ambient": [0.0, 0.5, 0.0],
+			"Diffuse": [0.5, 0.5, 0.5],
+			"Specular": [0.2, 0.2, 0.2],
+			"Mirror": [0.7, 0.7, 0.7],
+			"Refraction": [0.0, 0.0, 0.0],
+			"RefractionIndex": 1.0,
+			"Shininess": 256.0
+		}
+	],
+	"Lights": [
+		{
+			"Position": [2, 2, 1],
+			"Color": [16, 16, 16]
+		}
+	],
+	"Objects": [
+		{
+			"Type": "Sphere",
+			"Material": 0,
+			"Position": [1.8, 0.8, 1],
+			"Radius": 0.4
+		},
+		{
+			"Type": "Sphere",
+			"Material": 0,
+			"Position": [0.8, 1.5, 1],
+			"Radius": 0.3
+		},
+		{
+			"Type": "Sphere",
+			"Material": 0,
+			"Position": [-1.5, 1, 1],
+			"Radius": 1
+		},
+		{
+			"Type": "Parallelogram",
+			"Material": 0,
+			"Position": [-5, -1, 5],
+			"u": [5, -1, 5],
+			"v": [-5, -1, -5]
+		}
+	]
+}

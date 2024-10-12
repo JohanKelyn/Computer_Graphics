@@ -109,17 +109,28 @@ bool Sphere::intersect(const Ray &ray, Intersection &hit) {
 	float b = 2*(ray.direction).dot(ray.origin - position);
 	float c = (ray.origin - position).dot(ray.origin - position) - radius * radius;
 
-	if((b*b - 4*a*c) > 0) {
-		float t1 = (-b + sqrt(b*b - 4*a*c)) / (2*a);
-		float t2 = (-b - sqrt(b*b - 4*a*c)) / (2*a);
+	double discriminant = (b*b - 4*a*c);
 
-		float t = abs(t1) > abs(t2) ? t2 : t1;
-		hit.position = ray.origin + t * ray.direction;;
-		hit.normal = (hit.position - position).normalized();
-		hit.ray_param = t;
-		return true;
+	if( discriminant < 0) return false;
+	
+	float t1 = (-b - sqrt(discriminant)) / (2*a);
+	float t2 = (-b + sqrt(discriminant)) / (2*a);
+
+	if (t2 < 0) return false;
+	if (t1 < 0) {
+		hit.ray_param = t2;
+		hit.position = ray.origin + t2 * ray.direction;
 	}
-	return false;
+	else {
+		hit.ray_param = t1;
+		hit.position = ray.origin + hit.ray_param * ray.direction;
+	}
+
+	if(ray.direction.dot(hit.position - position) < 0) hit.normal = (hit.position - position).normalized();
+	else hit.normal = -(hit.position - position).normalized();
+	
+	
+	return true;
 }
 
 bool Parallelogram::intersect(const Ray &ray, Intersection &hit) {
@@ -133,13 +144,13 @@ bool Parallelogram::intersect(const Ray &ray, Intersection &hit) {
 
 		Vector3d x = M.colPivHouseholderQr().solve(y);
 
-		if (x(2) > 0 && x(0) > 0 && x(0) <= 1 && x(1) > 0 && x(1) <= 1 && (x(0) + x(1) <= 2) ) {
+		if (x(2) > 0 && x(0) >= 0 && x(0) <= 1 && x(1) >= 0 && x(1) <= 1) {
 			// The ray hit the parallelogram, compute the exact intersection point
 			hit.position = ray.origin + x(2) * ray.direction;
 
-			// Compute normal at the intersection point
-			hit.normal = ((u - origin).cross(v - origin)).normalized();
+			Vector3d normal = ((u - origin).cross(v - origin)).normalized();
 
+			hit.normal = (ray.direction.dot(normal) < 0) ? normal : -normal; 
 			// Hit Parameter
 			hit.ray_param = x(2);
 
@@ -158,50 +169,80 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &object, con
 Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &closest_hit);
 bool is_light_visible(const Scene &scene, const Ray &ray, const Light &light);
 Vector3d shoot_ray(const Scene &scene, const Ray &ray, int max_bounce);
+bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3d &t);
 
 // -----------------------------------------------------------------------------
+
+bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3d &t) {
+	double nr = n0 / n1; 
+	double cos_theta = std::fmin(N.dot(-d), 1.0);
+	Vector3d r_out_perp = (nr * (d + cos_theta * N));
+	Vector3d r_out_par = (-std::sqrt(std::fabs(1.0 - r_out_perp.squaredNorm())) * N);
+	t = (r_out_par + r_out_perp);
+	return true;
+}
 
 Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const Intersection &hit, int max_bounce) {
 	// Material for hit object
 	const Material &mat = obj.material;
+	float epsilon = 0.001;
 
 	// Ambient light contribution
 	Vector3d ambient_color = obj.material.ambient_color.array() * scene.ambient_light.array();
 
 	// Punctual lights contribution (direct lighting)
 	Vector3d lights_color(0, 0, 0);
+
 	for (const Light &light : scene.lights) {
 		Vector3d Li = (light.position - hit.position).normalized();
 		Vector3d N = hit.normal;
 
-		// TODO: Shoot a shadow ray to determine if the light should affect the intersection point
-		float epsilon = 0.01;
+		// Shoot a shadow ray to determine if the light should affect the intersection point
 		Ray shadow_ray;	
 		shadow_ray.origin = hit.position + epsilon * N;
-		shadow_ray.direction = (light.position - hit.position);
+		shadow_ray.direction = Li;
 		bool in_shadow = is_light_visible(scene, shadow_ray, light);
 
-		if(in_shadow == false) {
-			// Diffuse contribution
+		if(in_shadow == true) continue;
+		// Diffuse contribution
 		Vector3d diffuse = mat.diffuse_color * std::max(Li.dot(N), 0.0);
 
 		// Specular contribution
-		Vector3d h = (scene.camera.position + light.position).normalized();
-		Vector3d specular = mat.specular_color * pow(std::max(N.dot(h),0.0), mat.specular_exponent);
+		Vector3d v = (scene.camera.position - hit.position).normalized();
+		Vector3d h = (v + Li).normalized();
+		Vector3d specular = mat.specular_color * pow(std::max(h.dot(N), 0.0), mat.specular_exponent);
 
 		// Attenuate lights according to the squared distance to the lights
 		Vector3d D = light.position - hit.position;
 		lights_color += (diffuse + specular).cwiseProduct(light.intensity) /  D.squaredNorm();
-		} 
 	}
-
-	// TODO: Compute the color of the reflected ray and add its contribution to the current point color.
+	// Compute the color of the reflected ray and add its contribution to the current point color.
 	Vector3d reflection_color(0, 0, 0);
-
-	// TODO: Compute the color of the refracted ray and add its contribution to the current point color.
-	//       Make sure to check for total internal reflection before shooting a new ray.
+	
+	if (mat.reflection_color.norm() > 0 && max_bounce > 0) {
+		Vector3d r = ray.direction - 2 * ray.direction.dot(hit.normal) * hit.normal;
+		Ray reflection_ray(hit.position + epsilon * hit.normal, r);
+		reflection_color += mat.reflection_color.cwiseProduct(shoot_ray(scene, reflection_ray, max_bounce - 1));
+	}
+	
+	// Compute the color of the refracted ray and add its contribution to the current point color.
+	// Make sure to check for total internal reflection before shooting a new ray.
 	Vector3d refraction_color(0, 0, 0);
-
+	Vector3d t;
+	if (mat.refraction_color.norm() > 0 && max_bounce > 0) {
+		if (ray.direction.dot(hit.normal) < 0) { // air to object
+			if (refract(ray.direction, hit.normal, 1.0, mat.refraction_index, t)) {
+				Ray refraction_ray(hit.position + epsilon * hit.normal, t.normalized());
+				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
+			}
+		}
+		else { // object to air
+			if (refract(ray.direction, hit.normal, mat.refraction_index, 1.0, t)) {
+				Ray refraction_ray(hit.position + epsilon * hit.normal, t.normalized());
+				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
+			}
+		}
+	}	
 	// Rendering equation
 	Vector3d C = ambient_color + lights_color + reflection_color + refraction_color;
 
@@ -212,20 +253,22 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 
 Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &closest_hit) {
 	int closest_index = -1;
+	closest_hit.ray_param = std::numeric_limits<double>::max();
+	Intersection hit;
+	for (int i = 0; i < scene.objects.size(); i++) {
+		if (scene.objects[i]->intersect(ray, hit)) {
+			if (hit.ray_param < closest_hit.ray_param) {
+				closest_hit.position = hit.position;
+				closest_hit.normal = hit.normal;
+				closest_hit.ray_param = hit.ray_param;
+				closest_index = i;
+			}
+		}
+	}
 	// Find the object in the scene that intersects the ray first
 	// The function must return 'nullptr' if no object is hit, otherwise it must
 	// return a pointer to the hit object, and set the parameters of the argument
 	// 'hit' to their expected values.
-	double closest_value = 1000000;
-	for(int i = 0; i < scene.objects.size(); i++) {
-		auto ob = scene.objects[i];
-		bool intersection_happened = ob->intersect(ray, closest_hit);
-		double distance = (closest_hit.position - ray.origin).norm();
-		if((intersection_happened == true) && (distance < closest_value)) {
-			closest_index = i;
-		}
-	}
-
 	if (closest_index < 0) {
 		// Return a NULL pointer
 		return nullptr;
@@ -238,14 +281,13 @@ Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &c
 bool is_light_visible(const Scene &scene, const Ray &ray, const Light &light) {
 	// Determine if the light is visible here
 	bool in_shadow = false;
+	Intersection hit;
 	for(int i = 0; i < scene.objects.size(); i++) {
-		Intersection hit;
-		if(scene.objects[i]->intersect(ray, hit) && hit.ray_param <= 1 && hit.ray_param >= 0) {
-			in_shadow = true;
-			break;
+		if(scene.objects[i]->intersect(ray, hit)) {
+			if (hit.ray_param < (light.position - ray.origin).norm()) return true;
 		}
 	}
-	return in_shadow;
+	return false;
 }
 
 Vector3d shoot_ray(const Scene &scene, const Ray &ray, int max_bounce) {
@@ -276,7 +318,7 @@ void render_scene(const Scene &scene) {
 	// and covers an viewing angle given by 'field_of_view'.
 	double aspect_ratio = double(w) / double(h);
 	double tan_half_view = std::tan(scene.camera.field_of_view / 2);
-	double L = 2 * tan_half_view * scene.camera.focal_length;
+	double L = tan_half_view * scene.camera.focal_length;
 	double scale_y = L; // TODO: Stretch the pixel grid by the proper amount here
 	double scale_x = L * aspect_ratio; //
 
