@@ -174,11 +174,12 @@ bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3
 // -----------------------------------------------------------------------------
 
 bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3d &t) {
-	double nr = n0 / n1; 
-	double cos_theta = std::fmin(N.dot(-d), 1.0);
-	Vector3d r_out_perp = (nr * (d + cos_theta * N));
-	Vector3d r_out_par = (-std::sqrt(std::fabs(1.0 - r_out_perp.squaredNorm())) * N);
-	t = (r_out_par + r_out_perp);
+	double nr = n0 / n1;
+	double c1 = (-d).dot(N);
+	double cond = 1.0 - nr * nr * (1 - c1 * c1);
+	if (cond < 0) return false;
+	double c2 = sqrt(cond);
+	t = nr * d + (nr * c1 - c2) * N;
 	return true;
 }
 
@@ -221,7 +222,7 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 	
 	if (mat.reflection_color.norm() > 0 && max_bounce > 0) {
 		Vector3d r = ray.direction - 2 * ray.direction.dot(hit.normal) * hit.normal;
-		Ray reflection_ray(hit.position + epsilon * hit.normal, r);
+		Ray reflection_ray(hit.position + epsilon * r, r);
 		reflection_color += mat.reflection_color.cwiseProduct(shoot_ray(scene, reflection_ray, max_bounce - 1));
 	}
 	
@@ -230,15 +231,15 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 	Vector3d refraction_color(0, 0, 0);
 	Vector3d t;
 	if (mat.refraction_color.norm() > 0 && max_bounce > 0) {
-		if (ray.direction.dot(hit.normal) < 0) { // air to object
+		if (ray.direction.normalized().dot(hit.normal) > 0) { // air to object
 			if (refract(ray.direction, hit.normal, 1.0, mat.refraction_index, t)) {
-				Ray refraction_ray(hit.position + epsilon * hit.normal, t.normalized());
+				Ray refraction_ray(hit.position + epsilon * ray.direction, t);
 				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
 			}
 		}
 		else { // object to air
 			if (refract(ray.direction, hit.normal, mat.refraction_index, 1.0, t)) {
-				Ray refraction_ray(hit.position + epsilon * hit.normal, t.normalized());
+				Ray refraction_ray(hit.position + epsilon * ray.direction, t);
 				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
 			}
 		}

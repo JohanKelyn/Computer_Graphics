@@ -42,12 +42,21 @@
 			"Shininess": 256.0
 		},
 		{
-			"Ambient": [0.1, 0.3, 0.3],
-			"Diffuse": [0.1, 0.3, 0.3],
+			"Ambient": [0.2, 0.2, 0.2],
+			"Diffuse": [0.5, 0.0, 0.3],
+			"Specular": [0.0, 0.0, 0.0],
+			"Mirror": [0.0, 0.0, 0.0],
+			"Refraction": [0.7, 0.7, 0.7],
+			"RefractionIndex": 1.333,
+			"Shininess": 256.0
+		},
+		{
+			"Ambient": [0.3, 0.3, 0.3],
+			"Diffuse": [0, 0.0, 0.0],			
 			"Specular": [0.2, 0.2, 0.2],
 			"Mirror": [0.0, 0.0, 0.0],
-			"Refraction": [1.0, 1.0, 1.0],
-			"RefractionIndex": 1.333,
+			"Refraction": [0.0, 0.0, 0.0],
+			"RefractionIndex": 1.0,
 			"Shininess": 256.0
 		}
 	],
