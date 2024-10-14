@@ -11,7 +11,7 @@
 		"Position": [0.0, 0.0, 5.0],
 		"FieldOfView": 0.785398163,
 		"FocalLength": 5.0,
-		"LensRadius": 0.08
+		"LensRadius": 0.05
 	},
 	"Materials": [
 		{

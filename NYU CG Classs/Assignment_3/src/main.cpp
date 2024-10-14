@@ -322,6 +322,7 @@ void render_scene(const Scene &scene) {
 	double L = tan_half_view * scene.camera.focal_length;
 	double scale_y = L; // TODO: Stretch the pixel grid by the proper amount here
 	double scale_x = L * aspect_ratio; //
+	
 
 	// The pixel grid through which we shoot rays is at a distance 'focal_length'
 	// from the sensor, and is scaled from the canonical [-1,1] in order
@@ -329,10 +330,14 @@ void render_scene(const Scene &scene) {
 	Vector3d grid_origin(-scale_x, scale_y, -scene.camera.focal_length);
 	Vector3d x_displacement(2.0/w*scale_x, 0, 0);
 	Vector3d y_displacement(0, -2.0/h*scale_y, 0);
+	unsigned rep = 10;
 
 	for (unsigned i = 0; i < w; ++i) {
 		for (unsigned j = 0; j < h; ++j) {
-			// TODO: Implement depth of field
+			// Implement depth of field
+			Vector3d C(0, 0, 0);
+			int max_bounce = 5;
+
 			Vector3d shift = grid_origin + (i+0.5)*x_displacement + (j+0.5)*y_displacement;
 
 			// Prepare the ray
@@ -340,20 +345,23 @@ void render_scene(const Scene &scene) {
 
 			if (scene.camera.is_perspective) {
 				// Perspective camera
-				ray.origin = scene.camera.position;
-				ray.direction = shift - ray.origin;
+				for (unsigned k = 0; k < rep; k++) {
+					double dx = std::rand() / (RAND_MAX + 1.0) * scene.camera.lens_radius;
+					double dy = std::rand() / (RAND_MAX + 1.0) * scene.camera.lens_radius;
+					ray.origin = scene.camera.position + Vector3d(dx, dy, 0);
+					ray.direction = shift - ray.origin;
+					C += shoot_ray(scene, ray, max_bounce)/rep;
+				}	
 			} else {
 				// Orthographic camera
 				ray.origin = scene.camera.position + Vector3d(shift[0], shift[1], 0);
 				ray.direction = Vector3d(0, 0, -1);
+				C = shoot_ray(scene, ray, max_bounce);
 			}
-
-			int max_bounce = 5;
-			Vector3d C = shoot_ray(scene, ray, max_bounce);
-			R(i, j) = C(0);
-			G(i, j) = C(1);
-			B(i, j) = C(2);
-			A(i, j) = 1;
+				R(i, j) = C(0);
+				G(i, j) = C(1);
+				B(i, j) = C(2);
+				A(i, j) = 1;	
 		}
 	}
 
