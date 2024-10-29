@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <math.h>
 
 // Eigen for matrix operations
 #include <Eigen/Dense>
@@ -169,6 +170,67 @@ AlignedBox3d bbox_triangle(const Vector3d &a, const Vector3d &b, const Vector3d 
 	return box;
 }
 
+int createNode(const MatrixXd &V, const MatrixXi &F, const MatrixXd &Centroids, const std::vector<int> &triangles, AABBTree *tree){
+	// base condition for Top-Down method
+	int size = triangles.size();
+	// std::cout << "size: " << size << " ";
+	if (size == 1) {
+		AlignedBox3d root_box;
+		for (int i = 0; i < F.cols(); i++) {
+			root_box.extend((Vector3d)V.row(F(triangles[0], i)));
+		}
+		AABBTree::Node root_node;
+		root_node.bbox = root_box;
+		root_node.triangle = triangles[0];
+		tree->nodes.push_back(root_node);
+		return tree->nodes.size() - 1;
+	}
+
+	// get the box contains all triangles passed in
+	AlignedBox3d root_box;
+	// Get the biggest box contains all vertices
+	for (int i = 0; i < triangles.size(); i++) {
+		for (int j = 0; j < F.cols(); j++) {
+			root_box.extend((Vector3d)V.row(F(triangles[i], j)));
+		}
+	}
+	// get the longest axis of the root box
+	Vector3d sizes = root_box.sizes();
+	int axis = 0;
+	for (int i = 1; i < V.cols(); i++) {
+		if (sizes(i) > sizes(axis)) axis = i;
+	}
+	// Sort the centroids
+	std::vector<std::pair<double, int>> centros;
+	for (int i = 0; i < triangles.size(); i++) {
+		centros.push_back(std::make_pair(Centroids.row(triangles[i])(axis), triangles[i]));
+	}
+	std::sort(centros.begin(), centros.end(), [](const std::pair<double, int>& c1, const std::pair<double, int>& c2) {
+		return c1.first < c2.first;
+	});
+
+	// new sorted triangles
+	std::vector<int> new_triangles; // vector stores the index of sorted triangles
+	for (std::pair<double, int> p : centros) {
+		new_triangles.push_back(p.second);
+	}
+
+	std::size_t const half_size = size / 2;
+	std::vector<int> left(new_triangles.begin(), new_triangles.begin() + half_size);
+	std::vector<int> right(new_triangles.begin() + half_size, new_triangles.end());
+	int left_node = createNode(V, F, Centroids, left, tree);
+	int right_node = createNode(V, F, Centroids, right, tree);
+	AABBTree::Node root_node;
+	root_node.bbox = root_box;
+	root_node.left = left_node;
+	root_node.right = right_node;
+	tree->nodes[left_node].parent = tree->nodes.size();
+	tree->nodes[right_node].parent = tree->nodes[left_node].parent;
+	root_node.triangle = -1; // for internal node
+	tree->nodes.push_back(root_node);
+	return tree->nodes.size() - 1;
+}
+
 AABBTree::AABBTree(const MatrixXd &V, const MatrixXi &F) {
 	// Compute the centroids of all the triangles in the input mesh
 	MatrixXd centroids(F.rows(), V.cols());
@@ -180,12 +242,18 @@ AABBTree::AABBTree(const MatrixXd &V, const MatrixXi &F) {
 		centroids.row(i) /= F.cols();
 	}
 
-	// TODO (Assignment 3)
-
 	// Method (1): Top-down approach.
 	// Split each set of primitives into 2 sets of roughly equal size,
 	// based on sorting the centroids along one direction or another.
+	
+	// get the index of all triangles
+	std::vector<int> triangles; // vector stores the index of sorted triangles
+	for (int i = 0; i < F.rows(); i++) {
+		triangles.push_back(i);
+	}
 
+	this->root = createNode(V, F, centroids, triangles, this);
+	
 	// Method (2): Bottom-up approach.
 	// Merge nodes 2 by 2, starting from the leaves of the forest, until only 1 tree is left.
 }
@@ -193,43 +261,182 @@ AABBTree::AABBTree(const MatrixXd &V, const MatrixXi &F) {
 ////////////////////////////////////////////////////////////////////////////////
 
 bool Sphere::intersect(const Ray &ray, Intersection &hit) {
-	// TODO (Assignment 2)
-	return false;
+	// Compute the intersection between the ray and the sphere
+	// If the ray hits the sphere, set the result of the intersection in the
+	// struct 'hit'
+	float a = ray.direction.dot(ray.direction);
+	float b = 2*(ray.direction).dot(ray.origin - position);
+	float c = (ray.origin - position).dot(ray.origin - position) - radius * radius;
+
+	double discriminant = (b*b - 4*a*c);
+
+	if( discriminant < 0) return false;
+	
+	float t1 = (-b - sqrt(discriminant)) / (2*a);
+	float t2 = (-b + sqrt(discriminant)) / (2*a);
+
+	if (t2 < 0) return false;
+	if (t1 < 0) {
+		hit.ray_param = t2;
+		hit.position = ray.origin + t2 * ray.direction;
+	}
+	else {
+		hit.ray_param = t1;
+		hit.position = ray.origin + hit.ray_param * ray.direction;
+	}
+
+	if(ray.direction.dot(hit.position - position) < 0) hit.normal = (hit.position - position).normalized();
+	else hit.normal = -(hit.position - position).normalized();
+	
+	
+	return true;
 }
 
 bool Parallelogram::intersect(const Ray &ray, Intersection &hit) {
-	// TODO (Assignment 2)
+	// Check if the ray intersects with the parallelogram
+		Matrix3d M;
+		M.col(0) = origin - u;
+		M.col(1) = origin - v;
+		M.col(2) = ray.direction;
+
+		Vector3d y = origin - ray.origin;
+
+		Vector3d x = M.colPivHouseholderQr().solve(y);
+
+		if (x(2) > 0 && x(0) >= 0 && x(0) <= 1 && x(1) >= 0 && x(1) <= 1) {
+			// The ray hit the parallelogram, compute the exact intersection point
+			hit.position = ray.origin + x(2) * ray.direction;
+
+			Vector3d normal = ((u - origin).cross(v - origin)).normalized();
+
+			hit.normal = (ray.direction.dot(normal) < 0) ? normal : -normal; 
+			// Hit Parameter
+			hit.ray_param = x(2);
+
+			return true;
+		}
+
 	return false;
 }
 
 // -----------------------------------------------------------------------------
 
 bool intersect_triangle(const Ray &ray, const Vector3d &a, const Vector3d &b, const Vector3d &c, Intersection &hit) {
-	// TODO (Assignment 3)
-	//
-	// Compute whether the ray intersects the given triangle.
-	// If you have done the parallelogram case, this should be very similar to it.
+	// Check if the ray intersects with the parallelogram
+		Matrix3d M;
+		M.col(0) = a - b;
+		M.col(1) = a - c;
+		M.col(2) = ray.direction;
+
+		Vector3d y = a - ray.origin;
+
+		Vector3d x = M.colPivHouseholderQr().solve(y);
+
+		if (x(2) > 0 && x(0) >= 0 && x(1) >= 0 && x(1) + x(0) <= 1) {
+			// The ray hit the parallelogram, compute the exact intersection point
+			hit.position = ray.origin + x(2) * ray.direction;
+
+			Vector3d normal = ((b - a).cross(c - a)).normalized();
+
+			hit.normal = (ray.direction.dot(normal) < 0) ? normal : -normal; 
+			// Hit Parameter
+			hit.ray_param = x(2);
+
+			return true;
+		}
+
 	return false;
 }
 
 bool intersect_box(const Ray &ray, const AlignedBox3d &box) {
-	// TODO (Assignment 3)
-	//
 	// Compute whether the ray intersects the given box.
 	// There is no need to set the resulting normal and ray parameter, since
 	// we are not testing with the real surface here anyway.
-	return false;
+	Vector3d min = box.min();
+	Vector3d max = box.max();
+	double t_min = std::numeric_limits<double>::min();
+	double t_max = std::numeric_limits<double>::max();
+	for (int a = 0; a < 3; a++) {
+		auto t0 = fmin((min(a) - ray.origin(a)) / ray.direction(a),
+					   (max(a) - ray.origin(a)) / ray.direction(a));
+		auto t1 = fmax((min(a) - ray.origin(a)) / ray.direction(a),
+					   (max(a) - ray.origin(a)) / ray.direction(a));
+		t_min = fmax(t0, t_min);
+		t_max = fmin(t1, t_max);
+		if (t_max <= t_min)
+			return false;
+	}
+	return true;
 }
 
 bool Mesh::intersect(const Ray &ray, Intersection &closest_hit) {
 	// TODO (Assignment 3)
-
+	bool intersection_happened = false;
+	/*
 	// Method (1): Traverse every triangle and return the closest hit.
+	Intersection hit;
+	double closest_distance = 1000000;
+	for(unsigned i = 0; i < facets.rows(); i++) {
+		Vector3d a = vertices.row(facets.row(i)(0));
+		Vector3d b = vertices.row(facets.row(i)(1));
+		Vector3d c = vertices.row(facets.row(i)(2));
+		if(intersect_triangle(ray, a, b, c, hit)) {
+			double distance_to_hit = (hit.position - ray.origin).norm();
+			closest_distance = distance_to_hit < closest_distance ? distance_to_hit : closest_distance;
+			intersection_happened = true;
+		}
+	}
+	closest_hit = hit;
+	*/
 
+	
 	// Method (2): Traverse the BVH tree and test the intersection with a
 	// triangles at the leaf nodes that intersects the input ray.
+	AABBTree::Node node = bvh.nodes[bvh.root];
+	
+	// use two vectors to store all intersected nodes
+	std::vector<AABBTree::Node> internal_nodes;
+	internal_nodes.push_back(node);
+	std::vector<AABBTree::Node> leaf_nodes;
+	while (!internal_nodes.empty()) { // still have internal node to verify
+		node = internal_nodes.back();
+		internal_nodes.pop_back();
+		if (node.triangle != -1) { // this is a leaf node
+			leaf_nodes.push_back(node);
+			continue;
+		}
+		if (intersect_box(ray, bvh.nodes[node.left].bbox)) {
+			// intersect with the left subTree
+			internal_nodes.push_back(bvh.nodes[node.left]);
+		}
+		if (intersect_box(ray, bvh.nodes[node.right].bbox)) {
+			// intersect with the right subTree
+			internal_nodes.push_back(bvh.nodes[node.right]);
+		}
+	}
 
-	return false;
+	// search the leaf node
+	closest_hit.ray_param = std::numeric_limits<double>::max();
+	Intersection hit;
+	int triangle;
+	for (int i = 0; i < leaf_nodes.size(); i++) {
+		triangle = leaf_nodes[i].triangle;
+		if (intersect_triangle(ray, 
+							   vertices.row(facets(triangle, 0)),
+							   vertices.row(facets(triangle, 1)), 
+							   vertices.row(facets(triangle, 2)), 
+							   hit)) {
+			if (hit.ray_param < closest_hit.ray_param) {
+				closest_hit.ray_param = hit.ray_param;
+				closest_hit.position = hit.position;
+				closest_hit.normal = hit.normal;
+				intersection_happened = true;
+			}
+		}
+	}
+	
+
+	return intersection_happened;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,41 +448,80 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &object, con
 Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &closest_hit);
 bool is_light_visible(const Scene &scene, const Ray &ray, const Light &light);
 Vector3d shoot_ray(const Scene &scene, const Ray &ray, int max_bounce);
-
+bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3d &t);
 // -----------------------------------------------------------------------------
+
+bool refract(const Vector3d &d, const Vector3d &N, double n0, double n1, Vector3d &t) {
+	double nr = n0 / n1;
+	double c1 = (-d).dot(N);
+	double cond = 1.0 - nr * nr * (1 - c1 * c1);
+	if (cond < 0) return false;
+	double c2 = sqrt(cond);
+	t = nr * d + (nr * c1 - c2) * N;
+	return true;
+}
 
 Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const Intersection &hit, int max_bounce) {
 	// Material for hit object
 	const Material &mat = obj.material;
+	float epsilon = 0.001;
 
 	// Ambient light contribution
 	Vector3d ambient_color = obj.material.ambient_color.array() * scene.ambient_light.array();
 
 	// Punctual lights contribution (direct lighting)
 	Vector3d lights_color(0, 0, 0);
+
 	for (const Light &light : scene.lights) {
 		Vector3d Li = (light.position - hit.position).normalized();
 		Vector3d N = hit.normal;
 
-		// TODO (Assignment 2, shadow rays)
+		// Shoot a shadow ray to determine if the light should affect the intersection point
+		Ray shadow_ray;	
+		shadow_ray.origin = hit.position + epsilon * N;
+		shadow_ray.direction = Li;
+		bool in_shadow = is_light_visible(scene, shadow_ray, light);
 
+		if(in_shadow == true) continue;
 		// Diffuse contribution
 		Vector3d diffuse = mat.diffuse_color * std::max(Li.dot(N), 0.0);
 
-		// TODO (Assignment 2, specular contribution)
-		Vector3d specular(0, 0, 0);
+		// Specular contribution
+		Vector3d v = (scene.camera.position - hit.position).normalized();
+		Vector3d h = (v + Li).normalized();
+		Vector3d specular = mat.specular_color * pow(std::max(h.dot(N), 0.0), mat.specular_exponent);
 
 		// Attenuate lights according to the squared distance to the lights
 		Vector3d D = light.position - hit.position;
 		lights_color += (diffuse + specular).cwiseProduct(light.intensity) /  D.squaredNorm();
 	}
-
-	// TODO (Assignment 2, reflected ray)
+	// Compute the color of the reflected ray and add its contribution to the current point color.
 	Vector3d reflection_color(0, 0, 0);
-
-	// TODO (Assignment 2, refracted ray)
+	
+	if (mat.reflection_color.norm() > 0 && max_bounce > 0) {
+		Vector3d r = ray.direction - 2 * ray.direction.dot(hit.normal) * hit.normal;
+		Ray reflection_ray(hit.position + epsilon * r, r);
+		reflection_color += mat.reflection_color.cwiseProduct(shoot_ray(scene, reflection_ray, max_bounce - 1));
+	}
+	
+	// Compute the color of the refracted ray and add its contribution to the current point color.
+	// Make sure to check for total internal reflection before shooting a new ray.
 	Vector3d refraction_color(0, 0, 0);
-
+	Vector3d t;
+	if (mat.refraction_color.norm() > 0 && max_bounce > 0) {
+		if (ray.direction.normalized().dot(hit.normal) > 0) { // air to object
+			if (refract(ray.direction, hit.normal, 1.0, mat.refraction_index, t)) {
+				Ray refraction_ray(hit.position + epsilon * ray.direction, t);
+				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
+			}
+		}
+		else { // object to air
+			if (refract(ray.direction, hit.normal, mat.refraction_index, 1.0, t)) {
+				Ray refraction_ray(hit.position + epsilon * ray.direction, t);
+				refraction_color += mat.refraction_color.cwiseProduct(shoot_ray(scene, refraction_ray, max_bounce - 1));
+			}
+		}
+	}	
 	// Rendering equation
 	Vector3d C = ambient_color + lights_color + reflection_color + refraction_color;
 
@@ -286,8 +532,22 @@ Vector3d ray_color(const Scene &scene, const Ray &ray, const Object &obj, const 
 
 Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &closest_hit) {
 	int closest_index = -1;
-	// TODO (Assignment 2, find nearest hit)
-
+	closest_hit.ray_param = std::numeric_limits<double>::max();
+	Intersection hit;
+	for (int i = 0; i < scene.objects.size(); i++) {
+		if (scene.objects[i]->intersect(ray, hit)) {
+			if (hit.ray_param < closest_hit.ray_param) {
+				closest_hit.position = hit.position;
+				closest_hit.normal = hit.normal;
+				closest_hit.ray_param = hit.ray_param;
+				closest_index = i;
+			}
+		}
+	}
+	// Find the object in the scene that intersects the ray first
+	// The function must return 'nullptr' if no object is hit, otherwise it must
+	// return a pointer to the hit object, and set the parameters of the argument
+	// 'hit' to their expected values.
 	if (closest_index < 0) {
 		// Return a NULL pointer
 		return nullptr;
@@ -298,8 +558,15 @@ Object * find_nearest_object(const Scene &scene, const Ray &ray, Intersection &c
 }
 
 bool is_light_visible(const Scene &scene, const Ray &ray, const Light &light) {
-	// TODO (Assignment 2, shadow ray)
-	return true;
+	// Determine if the light is visible here
+	bool in_shadow = false;
+	Intersection hit;
+	for(int i = 0; i < scene.objects.size(); i++) {
+		if(scene.objects[i]->intersect(ray, hit)) {
+			if (hit.ray_param < (light.position - ray.origin).norm()) return true;
+		}
+	}
+	return false;
 }
 
 Vector3d shoot_ray(const Scene &scene, const Ray &ray, int max_bounce) {
@@ -329,8 +596,11 @@ void render_scene(const Scene &scene) {
 	// The sensor grid is at a distance 'focal_length' from the camera center,
 	// and covers an viewing angle given by 'field_of_view'.
 	double aspect_ratio = double(w) / double(h);
-	double scale_y = 1.0; // TODO: Stretch the pixel grid by the proper amount here
-	double scale_x = 1.0; //
+	double tan_half_view = std::tan(scene.camera.field_of_view / 2);
+	double L = tan_half_view * scene.camera.focal_length;
+	double scale_y = L; // TODO: Stretch the pixel grid by the proper amount here
+	double scale_x = L * aspect_ratio; //
+	
 
 	// The pixel grid through which we shoot rays is at a distance 'focal_length'
 	// from the sensor, and is scaled from the canonical [-1,1] in order
@@ -338,12 +608,16 @@ void render_scene(const Scene &scene) {
 	Vector3d grid_origin(-scale_x, scale_y, -scene.camera.focal_length);
 	Vector3d x_displacement(2.0/w*scale_x, 0, 0);
 	Vector3d y_displacement(0, -2.0/h*scale_y, 0);
+	unsigned rep = 5;
 
 	for (unsigned i = 0; i < w; ++i) {
 		std::cout << std::fixed << std::setprecision(2);
 		std::cout << "Ray tracing: " << (100.0 * i) / w << "%\r" << std::flush;
 		for (unsigned j = 0; j < h; ++j) {
-			// TODO (Assignment 2, depth of field)
+			// Implement depth of field
+			Vector3d C(0, 0, 0);
+			int max_bounce = 5;
+
 			Vector3d shift = grid_origin + (i+0.5)*x_displacement + (j+0.5)*y_displacement;
 
 			// Prepare the ray
@@ -351,24 +625,26 @@ void render_scene(const Scene &scene) {
 
 			if (scene.camera.is_perspective) {
 				// Perspective camera
-				// TODO (Assignment 2, perspective camera)
+				for (unsigned k = 0; k < rep; k++) {
+					double dx = (std::rand() / RAND_MAX * 2 - 1) * scene.camera.lens_radius;
+					double dy = (std::rand() / RAND_MAX * 2 - 1) * scene.camera.lens_radius;
+					ray.origin = scene.camera.position + Vector3d(dx, dy, 0);
+					ray.direction = shift - ray.origin;
+					C += shoot_ray(scene, ray, max_bounce)/rep;
+				}	
 			} else {
 				// Orthographic camera
 				ray.origin = scene.camera.position + Vector3d(shift[0], shift[1], 0);
 				ray.direction = Vector3d(0, 0, -1);
+				C = shoot_ray(scene, ray, max_bounce);
 			}
-
-			int max_bounce = 5;
-			Vector3d C = shoot_ray(scene, ray, max_bounce);
-			R(i, j) = C(0);
-			G(i, j) = C(1);
-			B(i, j) = C(2);
-			A(i, j) = 1;
+				R(i, j) = C(0);
+				G(i, j) = C(1);
+				B(i, j) = C(2);
+				A(i, j) = 1;	
 		}
 	}
-
 	std::cout << "Ray tracing: 100%  " << std::endl;
-
 	// Save to png
 	const std::string filename("raytrace.png");
 	write_matrix_to_png(R, G, B, A, filename);
@@ -430,10 +706,14 @@ Scene load_scene(const std::string &filename) {
 			sphere->radius = entry["Radius"];
 			object = sphere;
 		} else if (entry["Type"] == "Parallelogram") {
-			// TODO
+			auto parallelogram = std::make_shared<Parallelogram>();
+			parallelogram->origin = read_vec3(entry["Position"]);
+			parallelogram->u = read_vec3(entry["u"]);
+			parallelogram->v = read_vec3(entry["v"]);
+			object = parallelogram;
 		} else if (entry["Type"] == "Mesh") {
 			// Load mesh from a file
-			std::string filename = std::string(DATA_DIR) + entry["Path"].get<std::string>();
+			std::string filename = std::string("../data/") + entry["Path"].get<std::string>();
 			object = std::make_shared<Mesh>(filename);
 		}
 		object->material = scene.materials[entry["Material"]];
@@ -446,11 +726,8 @@ Scene load_scene(const std::string &filename) {
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *argv[]) {
-	if (argc < 2) {
-		std::cerr << "Usage: " << argv[0] << " scene.json" << std::endl;
-		return 1;
-	}
-	Scene scene = load_scene(argv[1]);
+
+	Scene scene = load_scene("./../data/scene.json");
 	render_scene(scene);
 	return 0;
 }
