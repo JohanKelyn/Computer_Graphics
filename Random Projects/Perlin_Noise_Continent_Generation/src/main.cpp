@@ -11,7 +11,7 @@ int main() {
     srand(time(0));
 
     int width = 800;
-    int height = 1000;
+    int height = 800;
     int scale = 1;
     float noiseScale = 0.0090*scale;
     int mapHeight = height/scale;
