@@ -13,7 +13,7 @@ int main() {
     int width = 800;
     int height = 800;
     int scale = 1;
-    float noiseScale = 0.0090*scale;
+    float noiseScale = 0.0150*scale;
     int mapHeight = height/scale;
     int mapWidth = width/scale;
     sf::RenderWindow window(sf::VideoMode(width, height), "Projetc 1 - Perlin Noise Continent Generation");
@@ -28,7 +28,7 @@ int main() {
             dx = (float)mapWidth * 0.5 - x;
             dy = (float) mapHeight * 0.5 - y;
             d = sqrt(dx * dx +  dy * dy);
-            cell.altitude = 0.75f - 2 * d/maxd;
+            cell.altitude = 1.5f - 2 * d/maxd;
             cell.altitude += 2 * (float)db::perlin((float)x*noiseScale, (float)y*noiseScale) - 0.3;
             cell.shape.setPosition((float)x * (float) scale, (float)y * (float) scale);
             cell.shape.setSize(sf::Vector2f((float) scale, (float) scale));
