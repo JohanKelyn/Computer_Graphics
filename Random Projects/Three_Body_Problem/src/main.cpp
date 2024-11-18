@@ -14,13 +14,13 @@ int main() {
     int height = 800;
     sf::RenderWindow window(sf::VideoMode(width, height), "Projetc 2 - Three Body Problem");
 
-    Planet p1(1.0, 5.0, Vector2d(400.0, 400.0));
+    Planet p1(1.0, 10.0, Vector2d(400.0, 400.0));
     p1.shape.setFillColor(sf::Color(255, 255, 0));
     p1.velocity = Vector2d(0.0, 0.0);
-    Planet p2(1.0, 5.0, Vector2d(250.0, 250.0));
+    Planet p2(1.0, 10.0, Vector2d(250.0, 250.0));
     p2.velocity = Vector2d(25, 1.0);
     p2.shape.setFillColor(sf::Color(255, 0, 0));
-    Planet p3(1.0, 5.0, Vector2d(550.0, 550.0));
+    Planet p3(1.0, 10.0, Vector2d(550.0, 550.0));
     p3.velocity = Vector2d(-25, -1.0);
     p3.shape.setFillColor(sf::Color(0, 255, 0));
 
