@@ -7,7 +7,7 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "FBO.h"
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include<vector>
 
 #define m_pi				3.141592654f
@@ -18,17 +18,17 @@
 #define m_rads(n)   (n * 0.017453f)
 #define m_degs(n)   (n * 57.29578f)
 
-std::string directory = "./Resources/Textures/";
+std::string directory = "./../../../Resources/Textures/";
 
 class Sphere
 {
 private:
 	float sector_count = 36;
 	float stack_count = 18;
-	VAO VAO;
-	VBO VBO;
-	EBO EBO;
-	FBO FBO;
+	VAO vao;
+	VBO vbo;
+	EBO ebo;
+	FBO fbo;
 	void setupSphere();
 public:
 	Sphere(std::string filename);
@@ -118,30 +118,30 @@ Sphere::Sphere(std::string filename) {
 }
 
 void Sphere::setupSphere() {
-	VAO.Bind();
-	VBO.Bind();
-	VBO.AttachData(vertices);
-	EBO.Bind();
-	EBO.AttachData(indices);
-	VAO.LinkVBO(VBO, 0, 3, GL_FLOAT, (void*)0);
-	VAO.LinkVBO(VBO, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
-	VAO.LinkVBO(VBO, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
-	VAO.Unbind();
+	vao.Bind();
+	vbo.Bind();
+	vbo.AttachData(vertices);
+	ebo.Bind();
+	ebo.AttachData(indices);
+	vao.LinkVBO(vbo, 0, 3, GL_FLOAT, (void*)0);
+	vao.LinkVBO(vbo, 1, 3, GL_FLOAT, (void*)offsetof(Vertex, normals));
+	vao.LinkVBO(vbo, 2, 2, GL_FLOAT, (void*)offsetof(Vertex, textures));
+	vao.Unbind();
 }
 
 void Sphere::Draw(Shader &shader) {
 	texture.Bind();
 	texture.ActiveTexture(0);
 	shader.setInt("texture_diffuse", 0);
-	VAO.Bind();
+	vao.Bind();
 	shader.setMat4("model", model);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	VAO.Unbind();
+	vao.Unbind();
 }
 
 void Sphere::AddBlur() {
-	FBO.GenerateFrameBuffer();
-	FBO.Bind();
+	fbo.GenerateFrameBuffer();
+	fbo.Bind();
 	Texture colorBuffers[2];
 	colorBuffers[0].GenerateTexture();
 	colorBuffers[1].GenerateTexture();

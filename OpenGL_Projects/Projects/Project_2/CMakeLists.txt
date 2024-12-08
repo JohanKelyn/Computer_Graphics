@@ -22,5 +22,3 @@ target_link_directories(
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} glfw3 GLEW OpenGL assimp)
-
-

@@ -16,10 +16,10 @@ int main()
 
 	ShadowMap shadowMap("OmniDirectionalShadow");
 
-	Shader shader1("Project7/vShaderSource.vs", "Project7/fShaderSource.fs");
-	Shader shader2("Project7/vShadowShaderSource.vs", "Project7/fShadowShaderSource.fs", "Project7/gShadowShaderSource.gs");
-	Shader shader3("Project7/vSunShaderSource.vs", "Project7/fSunShaderSource.fs");
-	Shader skyboxShader("Project3/vShaderSource.vs", "Project3/fShaderSource.fs");
+	Shader shader1("vShaderSource.vs", "fShaderSource.fs");
+	Shader shader2("vShadowShaderSource.vs", "fShadowShaderSource.fs", "gShadowShaderSource.gs");
+	Shader shader3("vSunShaderSource.vs", "fSunShaderSource.fs");
+	Shader skyboxShader("vSkyboxShaderSource.vs", "fSkyboxShaderSource.fs");
 
 	Sphere Sun("Sun");
 	Sphere Earth("Earth");
@@ -113,7 +113,6 @@ int main()
 		shader3.use();
 		shader3.setMat4("view", view);
 		shader3.setMat4("projection", projection);
-		shader3.setVec3("lightPos", light_position);
 		Sun.Draw(shader3);
 
 		glm::mat4 model(1.0f);
@@ -126,6 +125,7 @@ int main()
 		skyboxShader.setMat4("view", view * model);
 		skyboxShader.setMat4("projection", projection);
 		Cubemap.RenderCubeMap(skyboxShader);
+		
 
 		renderWindow.update();
 	}
