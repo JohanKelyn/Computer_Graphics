@@ -1,6 +1,5 @@
 #pragma once
 #include<GL/glew.h>
-#include "Mesh2.h"
 #include "Vertex.h"
 
 class VBO

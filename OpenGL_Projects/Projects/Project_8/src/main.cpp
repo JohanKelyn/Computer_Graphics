@@ -1,7 +1,6 @@
 #include"RenderWindow.h"
 #include"Shader.h"
 #include"Terrain.h"
-#include"Model.h"
 
 int main()
 {
@@ -10,15 +9,10 @@ int main()
 	RenderWindow renderWindow("PROJECT 8");
 	renderWindow.setBackground(0.87, 0.8, 1.0);
 
-	Shader shader1("Project8/vShaderSource.vs", "Project8/fShaderSource.fs");
+	Shader shader1("vShaderSource.vs", "fShaderSource.fs");
 
-    Terrain Terrain("./Resources/Textures/Iceland.png", "countryside.jpg");
-	Terrain.model = glm::translate(Terrain.model, glm::vec3(0.0, 7.53, 0.0f));
-
-	Model Naraku("./Resources/Models/Naraku/Naraku.obj");
-	Naraku.model = glm::scale(glm::translate(Naraku.model, glm::vec3(0.0, -2.0, -3.0)), glm::vec3(0.4));
-	
-
+    Terrain terrain("Iceland");
+    
 	while (!renderWindow.windowActive())
 	{
 		renderWindow.processInput(camera);
@@ -30,10 +24,10 @@ int main()
 		shader1.use();
 		shader1.setMat4("view", view);
 		shader1.setMat4("projection", projection);
+        shader1.setMat4("model", terrain.model);
 		
-		Naraku.Draw(shader1);
-        Terrain.Draw(shader1);
-		
+        
+		terrain.Draw(shader1);
 
 		renderWindow.update();
 	}
