@@ -29,7 +29,7 @@ public:
 Mesh2::Mesh2(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) {
 	this->vertices = vertices;
 	this->indices = indices;
-	this->textures = textures;
+	if(textures.size() > 0) this->textures = textures;
 
 	setupMesh();
 }
@@ -48,22 +48,24 @@ void Mesh2::setupMesh() {
 }
 
 void Mesh2::Draw(Shader &shader) {
-	GLuint diffueseNr = 1;
-	GLuint specularNr = 1;
+	if(textures.size() > 0) {
+		GLuint diffueseNr = 1;
+		GLuint specularNr = 1;
 
-	for (GLuint i = 0; i < textures.size(); i++) {
-		textures[i].ActiveTexture(i);
-		std::string number;
-		std::string name = textures[i].type;
-		if (name == "texture_diffuse")
-			number = std::to_string(diffueseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(specularNr++);
+		for (GLuint i = 0; i < textures.size(); i++) {
+			textures[i].ActiveTexture(i);
+			std::string number;
+			std::string name = textures[i].type;
+			if (name == "texture_diffuse")
+				number = std::to_string(diffueseNr++);
+			else if (name == "texture_specular")
+				number = std::to_string(specularNr++);
 
-		shader.setInt((name + number).c_str(), i);
-		textures[i].Bind();
+			shader.setInt((name + number).c_str(), i);
+			textures[i].Bind();
+		}
+		glActiveTexture(GL_TEXTURE0);
 	}
-	glActiveTexture(GL_TEXTURE0);
 
 	vao.Bind();
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

@@ -15,13 +15,21 @@ private:
 	std::string directory;
 
 	void loadModel(std::string path);
+	void loadOFF(std::string path);
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh2 processMesh(aiMesh *mesh, const aiScene* scene);
 	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 };
 
 Model::Model(std::string path) {
-	loadModel(path);
+	if(path.substr(path.length() - 3) == "obj") {
+		std::cout << "Reading OBJ File" << std::endl;
+		loadModel(path);
+	}
+	else if(path.substr(path.length() - 3) == "off") {
+		std::cout << "Reading OFF File" << std::endl;
+		loadOFF(path);
+	} 
 }
 
 void Model::Draw(Shader& shader) {
@@ -29,6 +37,64 @@ void Model::Draw(Shader& shader) {
 	for (GLuint i = 0; i < meshes.size(); i++) {
 		meshes[i].Draw(shader);
 	}
+}
+
+void Model::loadOFF(std::string path) {
+	std::ifstream in_file(path);
+	std::string line = "";
+	std::stringstream ss;
+	std::string prefix = "";
+
+	std::vector<Vertex> vertices;
+	std::vector<glm::vec3> temp_vertices;
+	std::vector<unsigned int> vertexIndices;
+	glm::vec3 temp_vert;
+	unsigned int f1, f2, f3;
+	int num_ver, num_faces, num_norm;
+	int i = 0;
+
+	if (!in_file.is_open())
+	{
+		printf("Could not open file");
+	}
+
+	while (std::getline(in_file, line))
+	{
+		ss.clear();
+		ss.str(line);
+		if (i == 0)
+		{
+			ss >> prefix;
+		}
+		else if (i == 1)
+		{
+			ss >> num_ver >> num_faces >> num_norm;
+		}
+		else if (i > 1 && i < num_ver + 2)
+		{
+			if(num_norm == 0) {
+				ss >> temp_vert.x >> temp_vert.y >> temp_vert.z;
+				temp_vertices.push_back(temp_vert);
+			}
+		}
+		else
+		{
+			ss >> prefix >> f1 >> f2 >> f3;
+			vertexIndices.push_back(f1);
+			vertexIndices.push_back(f2);
+			vertexIndices.push_back(f3);
+		}
+		i++;
+	}
+	for (auto vert : temp_vertices)
+	{
+		Vertex temp;
+		temp.positions = vert;
+		vertices.push_back(temp);
+	}
+	std::cout << "Nmber of vertices: " << num_ver << std::endl;
+	Mesh2 mesh(vertices, vertexIndices, std::vector<Texture>());
+	meshes.push_back(mesh);
 }
 
 void Model::loadModel(std::string path) {
