@@ -14,6 +14,10 @@ int main()
 	Shader shader("vShaderSource.vs", "fShaderSource.fs", "gShaderSource.gs");
 
 	Model bunny("./../../../Resources/Models/Bunny/Bunny.off");
+	bunny.model = glm::translate(bunny.model, glm::vec3(-0.8, 0.0, 0.0));
+
+	Model dragon("./../../../Resources/Models/Dragon/Dragon.off");
+	dragon.model = glm::translate(dragon.model, glm::vec3(0.8, 0.0, 1.0));
 
 	glm::vec3 lightPos(1.0f, 1.0f, 1.0f);
 	glm::vec3 lightColor(1.0f);
@@ -32,14 +36,13 @@ int main()
 		shader.setVec3("lightColor", lightColor);
 		shader.setVec3("lightPos", lightPos);
 		shader.setVec3("viewPos", camera.Position);
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(-0.4, -0.3, 0.2));
-		model = glm::scale(model, glm::vec3(3.0));
-		shader.setMat4("model", model);
+
 		
-		
-		shader.setMat4("model", model);
+		shader.setMat4("model", bunny.model);
 		bunny.Draw(shader);
+
+		shader.setMat4("model", bunny.model);
+		dragon.Draw(shader);
 
 		renderWindow.update();
 	}

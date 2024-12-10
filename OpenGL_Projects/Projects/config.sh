@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clear
-cd Project_6
+cd Project_1
 cd build
 cmake ..
 make
